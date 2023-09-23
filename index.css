@@ -1,0 +1,16 @@
+body {
+  font-family: Baskerville;
+  user-select: none;
+}
+
+h1 {
+  text-align: center;
+  font-size: 3rem;
+}
+
+#cnv {
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  left: 0;
+}
