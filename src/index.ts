@@ -1,7 +1,9 @@
 import { COLORS, PIECE_SIZE } from "./constants.js";
-import { Position, PuzzlePiece } from "./types";
+import { Facing, Position, PuzzlePiece, Edge } from "./types.js";
 import {
   bringToFront,
+  Corner,
+  getCornerPosition,
   getCursorPosition,
   getPieceForPosition,
 } from "./utils.js";
@@ -11,8 +13,8 @@ let canvas: HTMLCanvasElement = null;
 // Pieces are arranged such that the State is also a Z-buffer
 const PUZZLE_STATE: PuzzlePiece[] = [
   { x: 100, y: 100, id: 0 },
-  //{ x: 0, y: 0, id: 1 },
-  //{ x: 0, y: 0, id: 2 },
+  { x: 0, y: 0, id: 1 },
+  { x: 0, y: 0, id: 2 },
   //{ x: 0, y: 0, id: 3 },
   //{ x: 0, y: 0, id: 4 },
   //{ x: 0, y: 0, id: 5 },
@@ -95,132 +97,133 @@ function renderLoop(canvas: HTMLCanvasElement) {
 }
 
 function renderPuzzlePiece(ctx: CanvasRenderingContext2D, piece: PuzzlePiece) {
-  //ctx.fillStyle = COLORS[piece.id];
-  //ctx.fillRect(piece.x, piece.y, PIECE_SIZE, PIECE_SIZE);
+  ctx.fillStyle = COLORS[piece.id];
+  ctx.beginPath();
   drawTopEdge(ctx, piece);
   drawBottomEdge(ctx, piece);
-  drawRightEdge(ctx, piece)
-  drawLeftEdge(ctx, piece)
+  drawRightEdge(ctx, piece);
+  drawLeftEdge(ctx, piece);
+  ctx.fill("evenodd");
 }
 
-
 function drawTopEdge(ctx: CanvasRenderingContext2D, piece: PuzzlePiece) {
-  ctx.beginPath();
+  const start = getCornerPosition(piece, Corner.topLeft);
 
   if (true) {
-    drawHorizontalA(ctx, piece);
+    drawHorizontal(ctx, start, Facing.UP, Edge.INNY);
   }
 }
 
-
 function drawBottomEdge(ctx: CanvasRenderingContext2D, piece: PuzzlePiece) {
-  ctx.beginPath();
-
+  const start = getCornerPosition(piece, Corner.bottomLeft);
   if (true) {
-    //drawHorizontalA(ctx, {...piece, y: piece.y + PIECE_SIZE});
+    drawHorizontal(ctx, start, Facing.DOWN, Edge.INNY);
   }
 }
 
 function drawRightEdge(ctx: CanvasRenderingContext2D, piece: PuzzlePiece) {
-  ctx.beginPath();
-
+  const start = getCornerPosition(piece, Corner.topRight);
   if (true) {
-    drawVerticalA(ctx, {...piece, x: piece.x + PIECE_SIZE});
+    drawVertical(ctx, start, Facing.RIGHT, Edge.INNY);
   }
 }
-
 
 function drawLeftEdge(ctx: CanvasRenderingContext2D, piece: PuzzlePiece) {
-  ctx.beginPath();
-
+  const start = getCornerPosition(piece, Corner.topLeft);
   if (true) {
-    drawVerticalA(ctx, {...piece});
+    drawVertical(ctx, start, Facing.LEFT, Edge.OUTY);
   }
 }
 
-function drawVerticalA(ctx: CanvasRenderingContext2D, topPosition: Position) {
-  const topP = {...topPosition};
-  const mid = { x: topP.x + 0.25 * PIECE_SIZE, y: topP.y + 0.5 * PIECE_SIZE};
-  const bottomP = { x: topPosition.x, y: topPosition.y + PIECE_SIZE}
-  ctx.beginPath();
-  ctx.moveTo(topPosition.x, topPosition.y);
-  // Draw Curve
-  ctx.bezierCurveTo(
-    topP.x - PIECE_SIZE * 0.12,
-    topP.y + PIECE_SIZE * 0.75,
-    topP.x + PIECE_SIZE * 0.25,
-    topP.y + PIECE_SIZE * 0.06,
-    mid.x,
-    mid.y,
-  );
-  ctx.moveTo(bottomP.x, bottomP.y);
-  ctx.bezierCurveTo(
-    bottomP.x - PIECE_SIZE * 0.12,
-    bottomP.y - PIECE_SIZE * 0.75,
-    bottomP.x + PIECE_SIZE * 0.25,
-    bottomP.y + PIECE_SIZE * 0.06,
-    mid.x,
-    mid.y,
-  );
-  ctx.stroke();
-}
-
-function drawVerticalB(ctx: CanvasRenderingContext2D, position: Position) {
-  const topP = {...position};
-  const mid = { x: topP.x + 0.25 * PIECE_SIZE, y: topP.y + 0.5 * PIECE_SIZE};
-  const bottomP = { x: position.x, y: position.y + PIECE_SIZE}
-  ctx.beginPath();
-  ctx.moveTo(position.x, position.y);
-  // Draw Curve
-  ctx.bezierCurveTo(
-    topP.x - PIECE_SIZE * 0.12,
-    topP.y + PIECE_SIZE * 0.75,
-    topP.x + PIECE_SIZE * 0.25,
-    topP.y + PIECE_SIZE * 0.06,
-    mid.x,
-    mid.y,
-  );
-  ctx.moveTo(bottomP.x, bottomP.y);
-  ctx.bezierCurveTo(
-    bottomP.x - PIECE_SIZE * 0.12,
-    bottomP.y - PIECE_SIZE * 0.75,
-    bottomP.x + PIECE_SIZE * 0.25,
-    bottomP.y + PIECE_SIZE * 0.06,
-    mid.x,
-    mid.y,
-  );
-  ctx.stroke();
-}
-
-function drawHorizontalA(ctx: CanvasRenderingContext2D, leftPosition: Position) {
-  const leftP = {...leftPosition};
+function drawVertical(
+  ctx: CanvasRenderingContext2D,
+  topPosition: Position,
+  facing: Facing,
+  edge: Edge
+) {
+  const facingMultiplier = facing === Facing.LEFT ? 1 : -1;
+  const edgeMultiplier = (edge === Edge.OUTY ? 1 : -1) * facingMultiplier * -1;
+  const topP = { ...topPosition };
   const mid = {
-    y: leftP.y - PIECE_SIZE * 0.25,
+    x: topP.x + 0.25 * PIECE_SIZE * edgeMultiplier,
+    y: topP.y + 0.5 * PIECE_SIZE,
+  };
+  const bottomP = { x: topPosition.x, y: topPosition.y + PIECE_SIZE };
+  ctx.moveTo(topPosition.x, topPosition.y);
+  if (edge === Edge.FLAT) {
+    ctx.lineTo(bottomP.x, bottomP.y);
+    ctx.lineTo(topPosition.x + 0.5 * PIECE_SIZE * facingMultiplier, mid.y);
+    ctx.lineTo(topPosition.x, topPosition.y);
+    return;
+  }
+  // Draw Curve
+  ctx.bezierCurveTo(
+    topP.x - PIECE_SIZE * 0.12 * edgeMultiplier,
+    topP.y + PIECE_SIZE * 0.75,
+    topP.x + PIECE_SIZE * 0.25 * edgeMultiplier,
+    topP.y + PIECE_SIZE * 0.06,
+    mid.x,
+    mid.y
+  );
+  ctx.lineTo(topPosition.x + 0.5 * PIECE_SIZE * facingMultiplier, mid.y);
+  ctx.lineTo(topPosition.x, topPosition.y);
+  ctx.moveTo(bottomP.x, bottomP.y);
+  ctx.bezierCurveTo(
+    bottomP.x - PIECE_SIZE * 0.12 * edgeMultiplier,
+    bottomP.y - PIECE_SIZE * 0.75,
+    bottomP.x + PIECE_SIZE * 0.25 * edgeMultiplier,
+    bottomP.y + PIECE_SIZE * 0.06,
+    mid.x,
+    mid.y
+  );
+  ctx.lineTo(topPosition.x + 0.5 * PIECE_SIZE * facingMultiplier, mid.y);
+  ctx.lineTo(topPosition.x, bottomP.y);
+}
+
+function drawHorizontal(
+  ctx: CanvasRenderingContext2D,
+  leftPosition: Position,
+  facing: Facing,
+  edge: Edge
+) {
+  const facingMultiplier = facing === Facing.UP ? 1 : -1;
+  const edgeMultiplier = (edge === Edge.OUTY ? 1 : -1) * facingMultiplier;
+  const leftP = { ...leftPosition };
+  const mid = {
+    y: leftP.y - PIECE_SIZE * 0.25 * edgeMultiplier,
     x: leftP.x + PIECE_SIZE * 0.5,
   };
-  const rightP = { ...leftPosition, x: leftPosition.x + PIECE_SIZE}
-  ctx.beginPath();
+  const rightP = { ...leftPosition, x: leftPosition.x + PIECE_SIZE };
   ctx.moveTo(leftPosition.x, leftPosition.y);
+  if (edge === Edge.FLAT) {
+    ctx.lineTo(rightP.x, rightP.y);
+    ctx.lineTo(leftPosition.x + 0.5 * PIECE_SIZE, leftPosition.y + 0.5 * PIECE_SIZE * facingMultiplier);
+    ctx.lineTo(leftPosition.x, leftPosition.y);
+    return
+  }
   //console.log('leftPosition', leftPosition);
   // Draw Curve
   //ctx.lineTo(mid.x, mid.y);
   //console.log('mid', mid);
   ctx.bezierCurveTo(
-    leftP.x + PIECE_SIZE * 0.75 ,
-    leftP.y + PIECE_SIZE * 0.12,
+    leftP.x + PIECE_SIZE * 0.75,
+    leftP.y + PIECE_SIZE * 0.12 * edgeMultiplier,
     leftP.x + PIECE_SIZE * 0.06,
-    leftP.y - PIECE_SIZE * 0.25,
+    leftP.y - PIECE_SIZE * 0.25 * edgeMultiplier,
     mid.x,
-    mid.y,
+    mid.y
   );
+  ctx.lineTo(mid.x, leftP.y + 0.5 * PIECE_SIZE * facingMultiplier);
+  ctx.lineTo(leftP.x, leftP.y);
   ctx.moveTo(rightP.x, rightP.y);
   ctx.bezierCurveTo(
-    rightP.x - PIECE_SIZE * 0.75 ,
-    rightP.y + PIECE_SIZE * 0.12,
+    rightP.x - PIECE_SIZE * 0.75,
+    rightP.y + PIECE_SIZE * 0.12 * edgeMultiplier,
     rightP.x + PIECE_SIZE * 0.06,
-    rightP.y - PIECE_SIZE * 0.25,
+    rightP.y - PIECE_SIZE * 0.25 * edgeMultiplier,
     mid.x,
-    mid.y,
+    mid.y
   );
-  ctx.stroke();
+  ctx.lineTo(mid.x, leftP.y + 0.5 * PIECE_SIZE * facingMultiplier);
+  ctx.lineTo(rightP.x, rightP.y);
 }

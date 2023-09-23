@@ -41,3 +41,25 @@ export function jumblePieces(pieces: PuzzlePiece[]) {
   // find max jumble distance
   // scatter x and y randomly
 }
+
+export enum Corner {
+  topLeft = "TOP_LEFT",
+  topRight = "TOP_RIGHT",
+  bottomLeft = "BOTTOM_LEFT",
+  bottomRight = "BOTTOM_RIGHT",
+}
+
+export function getCornerPosition(piece: PuzzlePiece, corner: Corner ): Position {
+  switch (corner) {
+    case Corner.bottomLeft:
+      return {x: piece.x, y: piece.y + PIECE_SIZE};
+    case Corner.topLeft:
+      return {x: piece.x, y: piece.y};
+    case Corner.topRight:
+      return {x: piece.x + PIECE_SIZE, y: piece.y};
+    case Corner.bottomRight:
+      return {x: piece.x + PIECE_SIZE, y: piece.y + PIECE_SIZE};
+  }
+}
+
+
