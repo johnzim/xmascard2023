@@ -1,10 +1,11 @@
 import { COLUMNS, ROWS } from "./constants.js";
-import { Position, PuzzlePiece } from "./types.js";
+import { Edge, Position, PuzzlePiece } from "./types.js";
 import {
   bringToFront,
   getCursorPosition,
   getPieceForPosition,
   jumblePieces,
+  setPieceEdges,
 } from "./utils.js";
 
 import { renderPuzzlePiece } from "./drawPiece.js";
@@ -17,7 +18,16 @@ const PUZZLE_STATE: PuzzlePiece[] = [];
 // Initialize the PUZZLE_STATE with the correct number of Columns / Rows
 for (let i = 0; i < COLUMNS; i++) {
   for (let j = 0; j < ROWS; j++) {
-    PUZZLE_STATE.push({ x: 100, y: 100, id: PUZZLE_STATE.length });
+    PUZZLE_STATE.push({
+      x: 100,
+      y: 100,
+      id: PUZZLE_STATE.length,
+      // Init all edges as flat
+      top: Edge.FLAT,
+      left: Edge.FLAT,
+      right: Edge.FLAT,
+      bottom: Edge.FLAT,
+    });
   }
 }
 
@@ -35,9 +45,10 @@ function getCanvas(): HTMLCanvasElement {
 window.addEventListener("load", () => {
   const cnv = getCanvas();
   fitCanvas(cnv);
-  console.debug("Initializing Canvas:", cnv);
-
   registerMouseEvents(cnv);
+
+  // Make Puzzle valid
+  setPieceEdges(PUZZLE_STATE);
 
   // Jumble Pieces up
   jumblePieces(cnv, PUZZLE_STATE);
@@ -91,7 +102,6 @@ function renderLoop() {
 
   // Clear the canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
 
   // render pieces
   PUZZLE_STATE.forEach((puzzlePiece) => renderPuzzlePiece(ctx, puzzlePiece));

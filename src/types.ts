@@ -1,6 +1,10 @@
 
 export interface PuzzlePiece extends Position {
   id: number;
+  top: Edge;
+  bottom: Edge;
+  right: Edge;
+  left: Edge;
 }
 
 export interface Position {

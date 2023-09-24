@@ -1,4 +1,4 @@
-import { COLUMNS, ROWS, PIECE_SIZE } from "./constants.js";
+import { COLUMNS, PIECE_SIZE } from "./constants.js";
 import { getCornerPosition } from "./utils.js";
 import { Facing, Position, PuzzlePiece, Edge, Corner } from "./types.js";
 
@@ -22,31 +22,22 @@ export function renderPuzzlePiece(
 
 function drawTopEdge(ctx: CanvasRenderingContext2D, piece: PuzzlePiece) {
   const start = getCornerPosition(piece, Corner.TOP_LEFT);
-
-  if (true) {
-    drawHorizontal(ctx, start, Facing.UP, Edge.FLAT);
-  }
+  drawHorizontal(ctx, start, Facing.UP, piece.top);
 }
 
 function drawBottomEdge(ctx: CanvasRenderingContext2D, piece: PuzzlePiece) {
   const start = getCornerPosition(piece, Corner.BOTTOM_LEFT);
-  if (true) {
-    drawHorizontal(ctx, start, Facing.DOWN, Edge.INNY);
-  }
+  drawHorizontal(ctx, start, Facing.DOWN, piece.bottom);
 }
 
 function drawRightEdge(ctx: CanvasRenderingContext2D, piece: PuzzlePiece) {
   const start = getCornerPosition(piece, Corner.TOP_RIGHT);
-  if (true) {
-    drawVertical(ctx, start, Facing.RIGHT, Edge.INNY);
-  }
+  drawVertical(ctx, start, Facing.RIGHT, piece.right);
 }
 
 function drawLeftEdge(ctx: CanvasRenderingContext2D, piece: PuzzlePiece) {
   const start = getCornerPosition(piece, Corner.TOP_LEFT);
-  if (true) {
-    drawVertical(ctx, start, Facing.LEFT, Edge.OUTY);
-  }
+  drawVertical(ctx, start, Facing.LEFT, piece.left);
 }
 
 function drawVertical(
@@ -170,12 +161,12 @@ function drawPhotoInsidePiece(
   colsNRows.add(`${columnNumber}${rowNumber}`);
   ctx.drawImage(
     img,
-    segmentWidth * columnNumber - (0.5 * segmentWidth),
-    segmentWidth * rowNumber - (0.5 * segmentWidth),
+    segmentWidth * columnNumber - 0.5 * segmentWidth,
+    segmentWidth * rowNumber - 0.5 * segmentWidth,
     fullBleedSegmentWidth,
     fullBleedSegmentWidth,
-    piece.x - (PIECE_SIZE * 0.5),
-    piece.y - (PIECE_SIZE * 0.5),
+    piece.x - PIECE_SIZE * 0.5,
+    piece.y - PIECE_SIZE * 0.5,
     fullBleedPieceSize,
     fullBleedPieceSize
   );

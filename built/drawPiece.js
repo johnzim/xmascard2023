@@ -17,27 +17,19 @@ export function renderPuzzlePiece(ctx, piece) {
 }
 function drawTopEdge(ctx, piece) {
     const start = getCornerPosition(piece, Corner.TOP_LEFT);
-    if (true) {
-        drawHorizontal(ctx, start, Facing.UP, Edge.FLAT);
-    }
+    drawHorizontal(ctx, start, Facing.UP, piece.top);
 }
 function drawBottomEdge(ctx, piece) {
     const start = getCornerPosition(piece, Corner.BOTTOM_LEFT);
-    if (true) {
-        drawHorizontal(ctx, start, Facing.DOWN, Edge.INNY);
-    }
+    drawHorizontal(ctx, start, Facing.DOWN, piece.bottom);
 }
 function drawRightEdge(ctx, piece) {
     const start = getCornerPosition(piece, Corner.TOP_RIGHT);
-    if (true) {
-        drawVertical(ctx, start, Facing.RIGHT, Edge.INNY);
-    }
+    drawVertical(ctx, start, Facing.RIGHT, piece.right);
 }
 function drawLeftEdge(ctx, piece) {
     const start = getCornerPosition(piece, Corner.TOP_LEFT);
-    if (true) {
-        drawVertical(ctx, start, Facing.LEFT, Edge.OUTY);
-    }
+    drawVertical(ctx, start, Facing.LEFT, piece.left);
 }
 function drawVertical(ctx, topPosition, facing, edge) {
     const facingMultiplier = facing === Facing.LEFT ? 1 : -1;
@@ -108,5 +100,5 @@ function drawPhotoInsidePiece(ctx, piece) {
     const columnNumber = piece.id % COLUMNS;
     const fullBleedPieceSize = PIECE_SIZE * 2;
     colsNRows.add(`${columnNumber}${rowNumber}`);
-    ctx.drawImage(img, segmentWidth * columnNumber - (0.5 * segmentWidth), segmentWidth * rowNumber - (0.5 * segmentWidth), fullBleedSegmentWidth, fullBleedSegmentWidth, piece.x - (PIECE_SIZE * 0.5), piece.y - (PIECE_SIZE * 0.5), fullBleedPieceSize, fullBleedPieceSize);
+    ctx.drawImage(img, segmentWidth * columnNumber - 0.5 * segmentWidth, segmentWidth * rowNumber - 0.5 * segmentWidth, fullBleedSegmentWidth, fullBleedSegmentWidth, piece.x - PIECE_SIZE * 0.5, piece.y - PIECE_SIZE * 0.5, fullBleedPieceSize, fullBleedPieceSize);
 }

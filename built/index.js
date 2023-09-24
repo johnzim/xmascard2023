@@ -1,5 +1,6 @@
 import { COLUMNS, ROWS } from "./constants.js";
-import { bringToFront, getCursorPosition, getPieceForPosition, jumblePieces, } from "./utils.js";
+import { Edge } from "./types.js";
+import { bringToFront, getCursorPosition, getPieceForPosition, jumblePieces, setPieceEdges, } from "./utils.js";
 import { renderPuzzlePiece } from "./drawPiece.js";
 let canvas = null;
 // Pieces are arranged such that the State is also a Z-buffer
@@ -7,7 +8,16 @@ const PUZZLE_STATE = [];
 // Initialize the PUZZLE_STATE with the correct number of Columns / Rows
 for (let i = 0; i < COLUMNS; i++) {
     for (let j = 0; j < ROWS; j++) {
-        PUZZLE_STATE.push({ x: 100, y: 100, id: PUZZLE_STATE.length });
+        PUZZLE_STATE.push({
+            x: 100,
+            y: 100,
+            id: PUZZLE_STATE.length,
+            // Init all edges as flat
+            top: Edge.FLAT,
+            left: Edge.FLAT,
+            right: Edge.FLAT,
+            bottom: Edge.FLAT,
+        });
     }
 }
 let clickStartPosition = { x: 0, y: 0 };
@@ -22,8 +32,9 @@ function getCanvas() {
 window.addEventListener("load", () => {
     const cnv = getCanvas();
     fitCanvas(cnv);
-    console.debug("Initializing Canvas:", cnv);
     registerMouseEvents(cnv);
+    // Make Puzzle valid
+    setPieceEdges(PUZZLE_STATE);
     // Jumble Pieces up
     jumblePieces(cnv, PUZZLE_STATE);
     // Start the render loop
