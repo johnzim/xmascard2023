@@ -11,3 +11,10 @@ export var Edge;
     Edge["OUTY"] = "OUTY";
     Edge["FLAT"] = "FLAT";
 })(Edge || (Edge = {}));
+export var Corner;
+(function (Corner) {
+    Corner["TOP_LEFT"] = "TOP_LEFT";
+    Corner["TOP_RIGHT"] = "TOP_RIGHT";
+    Corner["BOTTOM_LEFT"] = "BOTTOM_LEFT";
+    Corner["BOTTOM_RIGHT"] = "BOTTOM_RIGHT";
+})(Corner || (Corner = {}));

@@ -1,4 +1,5 @@
 import { PIECE_SIZE } from "./constants.js";
+import { Corner } from "./types.js";
 export function getCursorPosition(canvas, event) {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -6,8 +7,6 @@ export function getCursorPosition(canvas, event) {
     return { x, y };
 }
 export function getPieceForPosition(position, pieces) {
-    console.log('position', position);
-    console.log('pieces', pieces);
     // working from front to back check which piece is valid
     for (let i = pieces.length - 1; i > -1; i--) {
         let piece = pieces[i];
@@ -25,27 +24,22 @@ export function bringToFront(piece, pieces) {
     }
     pieces.push(pieces.splice(index, 1)[0]);
 }
-export function jumblePieces(pieces) {
-    // find mid point of canvas
-    // find max jumble distance
+export function jumblePieces(canvas, puzzlePieces) {
     // scatter x and y randomly
+    puzzlePieces.forEach((piece) => {
+        piece.x = Math.floor(Math.random() * (canvas.width - PIECE_SIZE));
+        piece.y = Math.floor(Math.random() * (canvas.height - PIECE_SIZE));
+    });
 }
-export var Corner;
-(function (Corner) {
-    Corner["topLeft"] = "TOP_LEFT";
-    Corner["topRight"] = "TOP_RIGHT";
-    Corner["bottomLeft"] = "BOTTOM_LEFT";
-    Corner["bottomRight"] = "BOTTOM_RIGHT";
-})(Corner || (Corner = {}));
 export function getCornerPosition(piece, corner) {
     switch (corner) {
-        case Corner.bottomLeft:
+        case Corner.BOTTOM_LEFT:
             return { x: piece.x, y: piece.y + PIECE_SIZE };
-        case Corner.topLeft:
+        case Corner.TOP_LEFT:
             return { x: piece.x, y: piece.y };
-        case Corner.topRight:
+        case Corner.TOP_RIGHT:
             return { x: piece.x + PIECE_SIZE, y: piece.y };
-        case Corner.bottomRight:
+        case Corner.BOTTOM_RIGHT:
             return { x: piece.x + PIECE_SIZE, y: piece.y + PIECE_SIZE };
     }
 }
