@@ -5,6 +5,12 @@ export interface PuzzlePiece extends Position {
   bottom: Edge;
   right: Edge;
   left: Edge;
+  connected: {
+    top?: PuzzlePiece;
+    bottom?: PuzzlePiece;
+    left?: PuzzlePiece;
+    right?: PuzzlePiece;
+  }
 }
 
 export interface Position {

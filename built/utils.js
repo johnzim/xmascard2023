@@ -1,4 +1,4 @@
-import { COLUMNS, PIECE_SIZE, ROWS } from "./constants.js";
+import { COLUMNS, FIT_DISTANCE, PIECE_SIZE, ROWS } from "./constants.js";
 import { Corner, Edge } from "./types.js";
 export function getCursorPosition(canvas, event) {
     const rect = canvas.getBoundingClientRect();
@@ -111,4 +111,86 @@ function getPieceRight(piece, pieces) {
     }
     const id = piece.id + 1;
     return pieces.find((x) => x.id === id);
+}
+function distanceBetweenPositions(A, B) {
+    return Math.abs(A.x - B.x) + Math.abs(A.y - B.y);
+}
+export function addNearbyPiece(piece, pieces) {
+    let connectedPosition = null;
+    if (piece.top !== Edge.FLAT && !piece.connected.top) {
+        const above = getPieceAbove(piece, pieces);
+        const fitPosition = { x: above.x, y: above.y + PIECE_SIZE };
+        if (above && distanceBetweenPositions(piece, fitPosition) < FIT_DISTANCE) {
+            piece.connected.top = above;
+            above.connected.bottom = piece;
+            connectedPosition = fitPosition;
+        }
+    }
+    if (piece.bottom !== Edge.FLAT && !piece.connected.bottom) {
+        const below = getPieceBelow(piece, pieces);
+        const fitPosition = { x: below.x, y: below.y - PIECE_SIZE };
+        if (below && distanceBetweenPositions(piece, fitPosition) < FIT_DISTANCE) {
+            piece.connected.bottom = below;
+            below.connected.top = piece;
+            connectedPosition = fitPosition;
+        }
+    }
+    if (piece.left !== Edge.FLAT && !piece.connected.left) {
+        const left = getPieceLeft(piece, pieces);
+        const fitPosition = { x: left.x + PIECE_SIZE, y: left.y };
+        if (left && distanceBetweenPositions(piece, fitPosition) < FIT_DISTANCE) {
+            piece.connected.left = left;
+            left.connected.right = piece;
+            connectedPosition = fitPosition;
+        }
+    }
+    if (piece.right !== Edge.FLAT && !piece.connected.right) {
+        const right = getPieceRight(piece, pieces);
+        const fitPosition = { x: right.x - PIECE_SIZE, y: right.y };
+        if (right && distanceBetweenPositions(piece, fitPosition) < FIT_DISTANCE) {
+            piece.connected.right = right;
+            right.connected.left = piece;
+            connectedPosition = fitPosition;
+        }
+    }
+    if (connectedPosition) {
+        moveIfNew(piece, connectedPosition);
+    }
+}
+export function moveIfNew(piece, newPosition) {
+    if (newPosition.x !== piece.x || newPosition.y !== piece.y) {
+        piece.x = newPosition.x;
+        piece.y = newPosition.y;
+        moveAllConnectedPieces(piece);
+    }
+}
+export function moveAllConnectedPieces(draggedPiece) {
+    if (draggedPiece.connected.top) {
+        const newPosition = {
+            x: draggedPiece.x,
+            y: draggedPiece.y - PIECE_SIZE,
+        };
+        moveIfNew(draggedPiece.connected.top, newPosition);
+    }
+    if (draggedPiece.connected.bottom) {
+        const newPosition = {
+            x: draggedPiece.x,
+            y: draggedPiece.y + PIECE_SIZE,
+        };
+        moveIfNew(draggedPiece.connected.bottom, newPosition);
+    }
+    if (draggedPiece.connected.left) {
+        const newPosition = {
+            x: draggedPiece.x - PIECE_SIZE,
+            y: draggedPiece.y,
+        };
+        moveIfNew(draggedPiece.connected.left, newPosition);
+    }
+    if (draggedPiece.connected.right) {
+        const newPosition = {
+            x: draggedPiece.x + PIECE_SIZE,
+            y: draggedPiece.y,
+        };
+        moveIfNew(draggedPiece.connected.right, newPosition);
+    }
 }

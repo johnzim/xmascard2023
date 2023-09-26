@@ -1,6 +1,6 @@
 import { COLUMNS, ROWS } from "./constants.js";
 import { Edge } from "./types.js";
-import { bringToFront, getCursorPosition, getPieceForPosition, jumblePieces, setPieceEdges, } from "./utils.js";
+import { bringToFront, getCursorPosition, getPieceForPosition, jumblePieces, addNearbyPiece, setPieceEdges, moveAllConnectedPieces, } from "./utils.js";
 import { renderPuzzlePiece } from "./drawPiece.js";
 let canvas = null;
 // Pieces are arranged such that the State is also a Z-buffer
@@ -17,6 +17,7 @@ for (let i = 0; i < COLUMNS; i++) {
             left: Edge.FLAT,
             right: Edge.FLAT,
             bottom: Edge.FLAT,
+            connected: {},
         });
     }
 }
@@ -48,12 +49,15 @@ function registerMouseEvents(canvas) {
     // MouseUp needs to be considered no matter where the mouse is relative to
     // the canvas
     window.addEventListener("mouseup", () => {
+        if (draggedPiece) {
+            addNearbyPiece(draggedPiece, PUZZLE_STATE);
+            PUZZLE_STATE.forEach((piece) => addNearbyPiece(piece, PUZZLE_STATE));
+        }
         draggedPiece = null;
     });
     window.addEventListener("mousedown", (e) => {
         clickStartPosition = getCursorPosition(canvas, e);
         draggedPiece = getPieceForPosition(clickStartPosition, PUZZLE_STATE);
-        console.log("draggedPiece", draggedPiece);
         if (!draggedPiece) {
             return;
         }
@@ -68,9 +72,9 @@ function registerMouseEvents(canvas) {
             const newPosition = getCursorPosition(canvas, e);
             draggedPiece.x = newPosition.x + offset.x;
             draggedPiece.y = newPosition.y + offset.y;
+            moveAllConnectedPieces(draggedPiece);
             const columnNumber = (draggedPiece.id % COLUMNS) + 1;
             const rowNumber = (draggedPiece.id % ROWS) + 1;
-            console.log("columnNumber", columnNumber, rowNumber);
         }
     });
 }
