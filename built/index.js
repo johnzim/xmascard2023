@@ -1,6 +1,6 @@
 import { COLUMNS, ROWS } from "./constants.js";
 import { Edge } from "./types.js";
-import { bringToFront, getCursorPosition, getPieceForPosition, jumblePieces, addNearbyPiece, setPieceEdges, moveAllConnectedPieces, } from "./utils.js";
+import { bringToFront, getCursorPosition, getPieceForPosition, jumblePieces, addNearbyPiece, setPieceEdges, moveAllConnectedPieces, hasPuzzleFinished, } from "./utils.js";
 import { renderPuzzlePiece } from "./drawPiece.js";
 let canvas = null;
 // Pieces are arranged such that the State is also a Z-buffer
@@ -52,6 +52,9 @@ function registerMouseEvents(canvas) {
         if (draggedPiece) {
             addNearbyPiece(draggedPiece, PUZZLE_STATE);
             PUZZLE_STATE.forEach((piece) => addNearbyPiece(piece, PUZZLE_STATE));
+            if (hasPuzzleFinished(PUZZLE_STATE)) {
+                window.alert("ALL DONE!");
+            }
         }
         draggedPiece = null;
     });

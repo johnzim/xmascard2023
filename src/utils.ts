@@ -235,3 +235,27 @@ export function moveAllConnectedPieces(draggedPiece: PuzzlePiece) {
     moveIfNew(draggedPiece.connected.right, newPosition);
   }
 }
+
+export function hasPuzzleFinished(pieces: PuzzlePiece[]): boolean {
+  let missingEdge = false;
+  for (const piece of pieces) {
+    if (piece.top !== Edge.FLAT && !piece.connected.top) {
+      missingEdge = true;
+      break;
+    }
+    if (piece.bottom !== Edge.FLAT && !piece.connected.bottom) {
+      missingEdge = true;
+      break;
+    }
+    if (piece.left !== Edge.FLAT && !piece.connected.left) {
+      missingEdge = true;
+      break;
+    }
+    if (piece.right !== Edge.FLAT && !piece.connected.right) {
+      missingEdge = true;
+      break;
+    }
+  }
+
+  return !missingEdge;
+}

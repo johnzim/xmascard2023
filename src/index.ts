@@ -8,6 +8,7 @@ import {
   addNearbyPiece,
   setPieceEdges,
   moveAllConnectedPieces,
+  hasPuzzleFinished,
 } from "./utils.js";
 
 import { renderPuzzlePiece } from "./drawPiece.js";
@@ -72,6 +73,9 @@ function registerMouseEvents(canvas: HTMLCanvasElement) {
     if (draggedPiece) {
       addNearbyPiece(draggedPiece, PUZZLE_STATE);
       PUZZLE_STATE.forEach((piece) => addNearbyPiece(piece, PUZZLE_STATE));
+      if (hasPuzzleFinished(PUZZLE_STATE)) {
+        window.alert("ALL DONE!");
+      }
     }
     draggedPiece = null;
   });
