@@ -3,8 +3,8 @@ import { isTouchDevice } from "./index.js";
 import { Corner, Edge } from "./types.js";
 export function getCursorPosition(canvas, event) {
     const rect = canvas.getBoundingClientRect();
-    const x = (event.clientX || event.touches[0].pageX) - rect.left;
-    const y = (event.clientY || event.touches[0].pageY) - rect.top;
+    const x = (event.clientX || event.touches[0].clientX) - rect.left;
+    const y = (event.clientY || event.touches[0].clientY) - rect.top;
     return { x, y };
 }
 export function getPieceForPosition(position, pieces) {

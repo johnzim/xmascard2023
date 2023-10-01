@@ -7,8 +7,8 @@ export function getCursorPosition(
   event: MouseEvent | TouchEvent
 ): Position {
   const rect = canvas.getBoundingClientRect();
-  const x = ((event as MouseEvent).clientX || (event as TouchEvent).touches[0].pageX) - rect.left;
-  const y = ((event as MouseEvent).clientY || (event as TouchEvent).touches[0].pageY) - rect.top;
+  const x = ((event as MouseEvent).clientX || (event as TouchEvent).touches[0].clientX) - rect.left;
+  const y = ((event as MouseEvent).clientY || (event as TouchEvent).touches[0].clientY) - rect.top;
   return { x, y };
 }
 
