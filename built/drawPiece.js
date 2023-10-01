@@ -10,7 +10,7 @@ export function renderPuzzlePiece(ctx, piece) {
     drawRightEdge(ctx, piece);
     drawLeftEdge(ctx, piece);
     // use the outline as a clipping mask
-    ctx.clip('evenodd');
+    ctx.clip("evenodd");
     // draw the Photo inside the mask
     drawPhotoInsidePiece(ctx, piece);
     ctx.restore();
@@ -94,11 +94,25 @@ function getImage() {
 let colsNRows = new Set();
 function drawPhotoInsidePiece(ctx, piece) {
     const img = getImage();
-    const segmentWidth = img.width / COLUMNS;
-    const fullBleedSegmentWidth = (img.width / COLUMNS) * 2;
+    const segmentWidth = img.naturalWidth / COLUMNS;
+    const fullBleedSegmentWidth = segmentWidth * 2;
     const rowNumber = Math.floor(piece.id / COLUMNS);
     const columnNumber = piece.id % COLUMNS;
     const fullBleedPieceSize = PIECE_SIZE * 2;
     colsNRows.add(`${columnNumber}${rowNumber}`);
-    ctx.drawImage(img, segmentWidth * columnNumber - 0.5 * segmentWidth, segmentWidth * rowNumber - 0.5 * segmentWidth, fullBleedSegmentWidth, fullBleedSegmentWidth, piece.x - PIECE_SIZE * 0.5, piece.y - PIECE_SIZE * 0.5, fullBleedPieceSize, fullBleedPieceSize);
+    // Safari doesn't like sneaky negative value source x and source y values.
+    // So we start out taking just the generic position of the piece and if it's a negative value for either x or y we 'pan' back a bit to fill in left/bottom-aligned puzzle edges.
+    let sx = segmentWidth * columnNumber;
+    let sy = segmentWidth * rowNumber;
+    let dx = piece.x;
+    let dy = piece.y;
+    if (columnNumber > 0) {
+        sx -= 0.5 * segmentWidth;
+        dx -= 0.5 * PIECE_SIZE;
+    }
+    if (rowNumber > 0) {
+        sy -= 0.5 * segmentWidth;
+        dy -= 0.5 * PIECE_SIZE;
+    }
+    ctx.drawImage(img, sx, sy, fullBleedSegmentWidth, fullBleedSegmentWidth, dx, dy, fullBleedPieceSize, fullBleedPieceSize);
 }
