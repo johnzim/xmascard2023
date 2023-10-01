@@ -1,6 +1,8 @@
 body {
   font-family: Baskerville;
   user-select: none;
+  position: fixed;
+  overflow: hidden;
 }
 
 h1 {

@@ -1,9 +1,10 @@
 import { COLUMNS, FIT_DISTANCE, PIECE_SIZE, ROWS } from "./constants.js";
+import { isTouchDevice } from "./index.js";
 import { Corner, Edge } from "./types.js";
 export function getCursorPosition(canvas, event) {
     const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const x = (event.clientX || event.touches[0].pageX) - rect.left;
+    const y = (event.clientY || event.touches[0].pageY) - rect.top;
     return { x, y };
 }
 export function getPieceForPosition(position, pieces) {
@@ -117,10 +118,11 @@ function distanceBetweenPositions(A, B) {
 }
 export function addNearbyPiece(piece, pieces) {
     let connectedPosition = null;
+    const fitDistance = isTouchDevice ? FIT_DISTANCE * 1.25 : FIT_DISTANCE;
     if (piece.top !== Edge.FLAT && !piece.connected.top) {
         const above = getPieceAbove(piece, pieces);
         const fitPosition = { x: above.x, y: above.y + PIECE_SIZE };
-        if (above && distanceBetweenPositions(piece, fitPosition) < FIT_DISTANCE) {
+        if (above && distanceBetweenPositions(piece, fitPosition) < fitDistance) {
             piece.connected.top = above;
             above.connected.bottom = piece;
             connectedPosition = fitPosition;
@@ -129,7 +131,7 @@ export function addNearbyPiece(piece, pieces) {
     if (piece.bottom !== Edge.FLAT && !piece.connected.bottom) {
         const below = getPieceBelow(piece, pieces);
         const fitPosition = { x: below.x, y: below.y - PIECE_SIZE };
-        if (below && distanceBetweenPositions(piece, fitPosition) < FIT_DISTANCE) {
+        if (below && distanceBetweenPositions(piece, fitPosition) < fitDistance) {
             piece.connected.bottom = below;
             below.connected.top = piece;
             connectedPosition = fitPosition;
@@ -138,7 +140,7 @@ export function addNearbyPiece(piece, pieces) {
     if (piece.left !== Edge.FLAT && !piece.connected.left) {
         const left = getPieceLeft(piece, pieces);
         const fitPosition = { x: left.x + PIECE_SIZE, y: left.y };
-        if (left && distanceBetweenPositions(piece, fitPosition) < FIT_DISTANCE) {
+        if (left && distanceBetweenPositions(piece, fitPosition) < fitDistance) {
             piece.connected.left = left;
             left.connected.right = piece;
             connectedPosition = fitPosition;
@@ -147,7 +149,7 @@ export function addNearbyPiece(piece, pieces) {
     if (piece.right !== Edge.FLAT && !piece.connected.right) {
         const right = getPieceRight(piece, pieces);
         const fitPosition = { x: right.x - PIECE_SIZE, y: right.y };
-        if (right && distanceBetweenPositions(piece, fitPosition) < FIT_DISTANCE) {
+        if (right && distanceBetweenPositions(piece, fitPosition) < fitDistance) {
             piece.connected.right = right;
             right.connected.left = piece;
             connectedPosition = fitPosition;

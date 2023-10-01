@@ -15,6 +15,8 @@ import { renderPuzzlePiece } from "./drawPiece.js";
 
 let canvas: HTMLCanvasElement = null;
 
+export let isTouchDevice = false;
+
 // Pieces are arranged such that the State is also a Z-buffer
 const PUZZLE_STATE: PuzzlePiece[] = [];
 
@@ -49,7 +51,7 @@ function getCanvas(): HTMLCanvasElement {
 window.addEventListener("load", () => {
   const cnv = getCanvas();
   fitCanvas(cnv);
-  registerMouseEvents(cnv);
+  registerMouseEvents();
 
   // Make Puzzle valid
   setPieceEdges(PUZZLE_STATE);
@@ -66,44 +68,55 @@ function fitCanvas(canvas: HTMLCanvasElement) {
   canvas.height = window.innerHeight;
 }
 
-function registerMouseEvents(canvas: HTMLCanvasElement) {
+function end() {
+  if (draggedPiece) {
+    addNearbyPiece(draggedPiece, PUZZLE_STATE);
+    PUZZLE_STATE.forEach((piece) => addNearbyPiece(piece, PUZZLE_STATE));
+    if (hasPuzzleFinished(PUZZLE_STATE)) {
+      window.alert("ALL DONE!");
+    }
+  }
+  draggedPiece = null;
+}
+
+function start(e: MouseEvent | TouchEvent) {
+  const canvas = getCanvas();
+  clickStartPosition = getCursorPosition(canvas, e);
+  draggedPiece = getPieceForPosition(clickStartPosition, PUZZLE_STATE);
+  if (!draggedPiece) {
+    return;
+  }
+  offset = {
+    x: draggedPiece.x - clickStartPosition.x,
+    y: draggedPiece.y - clickStartPosition.y,
+  };
+  bringToFront(draggedPiece, PUZZLE_STATE);
+}
+
+function move(e: MouseEvent) {
+  const canvas = getCanvas();
+  if (draggedPiece) {
+    const newPosition = getCursorPosition(canvas, e);
+    draggedPiece.x = newPosition.x + offset.x;
+    draggedPiece.y = newPosition.y + offset.y;
+    moveAllConnectedPieces(draggedPiece);
+  }
+}
+
+function registerMouseEvents() {
   // MouseUp needs to be considered no matter where the mouse is relative to
   // the canvas
-  window.addEventListener("mouseup", () => {
-    if (draggedPiece) {
-      addNearbyPiece(draggedPiece, PUZZLE_STATE);
-      PUZZLE_STATE.forEach((piece) => addNearbyPiece(piece, PUZZLE_STATE));
-      if (hasPuzzleFinished(PUZZLE_STATE)) {
-        window.alert("ALL DONE!");
-      }
-    }
-    draggedPiece = null;
+  window.addEventListener("mouseup", end);
+  window.addEventListener("touchend", end);
+
+  window.addEventListener("mousedown", start);
+  window.addEventListener("touchstart", (e: TouchEvent) => {
+    isTouchDevice = true;
+    start(e);
   });
 
-  window.addEventListener("mousedown", (e) => {
-    clickStartPosition = getCursorPosition(canvas, e);
-    draggedPiece = getPieceForPosition(clickStartPosition, PUZZLE_STATE);
-    if (!draggedPiece) {
-      return;
-    }
-    offset = {
-      x: draggedPiece.x - clickStartPosition.x,
-      y: draggedPiece.y - clickStartPosition.y,
-    };
-    bringToFront(draggedPiece, PUZZLE_STATE);
-  });
-
-  window.addEventListener("mousemove", (e) => {
-    if (draggedPiece) {
-      const newPosition = getCursorPosition(canvas, e);
-      draggedPiece.x = newPosition.x + offset.x;
-      draggedPiece.y = newPosition.y + offset.y;
-      moveAllConnectedPieces(draggedPiece);
-
-      const columnNumber = (draggedPiece.id % COLUMNS) + 1;
-      const rowNumber = (draggedPiece.id % ROWS) + 1;
-    }
-  });
+  window.addEventListener("mousemove", move);
+  window.addEventListener("touchmove", move);
 }
 
 function renderLoop() {
