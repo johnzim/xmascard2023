@@ -10,7 +10,7 @@ export function renderPuzzlePiece(ctx, piece) {
     drawRightEdge(ctx, piece);
     drawLeftEdge(ctx, piece);
     // use the outline as a clipping mask
-    ctx.clip();
+    ctx.clip('evenodd');
     // draw the Photo inside the mask
     drawPhotoInsidePiece(ctx, piece);
     ctx.restore();
