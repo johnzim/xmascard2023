@@ -1,5 +1,5 @@
-import { COLUMNS, PIECE_SIZE } from "./constants.js";
-import { getCornerPosition } from "./utils.js";
+import { COLUMNS } from "./constants.js";
+import { deviceAppropriatePieceSize, getCornerPosition } from "./utils.js";
 import { Facing, Edge, Corner } from "./types.js";
 export function renderPuzzlePiece(ctx, piece) {
     ctx.save();
@@ -36,24 +36,24 @@ function drawVertical(ctx, topPosition, facing, edge) {
     const edgeMultiplier = (edge === Edge.OUTY ? 1 : -1) * facingMultiplier * -1;
     const topP = Object.assign({}, topPosition);
     const mid = {
-        x: topP.x + 0.25 * PIECE_SIZE * edgeMultiplier,
-        y: topP.y + 0.5 * PIECE_SIZE,
+        x: topP.x + 0.25 * deviceAppropriatePieceSize() * edgeMultiplier,
+        y: topP.y + 0.5 * deviceAppropriatePieceSize(),
     };
-    const bottomP = { x: topPosition.x, y: topPosition.y + PIECE_SIZE };
+    const bottomP = { x: topPosition.x, y: topPosition.y + deviceAppropriatePieceSize() };
     ctx.moveTo(topPosition.x, topPosition.y);
     if (edge === Edge.FLAT) {
         ctx.lineTo(bottomP.x, bottomP.y);
-        ctx.lineTo(topPosition.x + 0.5 * PIECE_SIZE * facingMultiplier, mid.y);
+        ctx.lineTo(topPosition.x + 0.5 * deviceAppropriatePieceSize() * facingMultiplier, mid.y);
         ctx.lineTo(topPosition.x, topPosition.y);
         return;
     }
     // Draw Curve
-    ctx.bezierCurveTo(topP.x - PIECE_SIZE * 0.12 * edgeMultiplier, topP.y + PIECE_SIZE * 0.75, topP.x + PIECE_SIZE * 0.25 * edgeMultiplier, topP.y + PIECE_SIZE * 0.06, mid.x, mid.y);
-    ctx.lineTo(topPosition.x + 0.5 * PIECE_SIZE * facingMultiplier, mid.y);
+    ctx.bezierCurveTo(topP.x - deviceAppropriatePieceSize() * 0.12 * edgeMultiplier, topP.y + deviceAppropriatePieceSize() * 0.75, topP.x + deviceAppropriatePieceSize() * 0.25 * edgeMultiplier, topP.y + deviceAppropriatePieceSize() * 0.06, mid.x, mid.y);
+    ctx.lineTo(topPosition.x + 0.5 * deviceAppropriatePieceSize() * facingMultiplier, mid.y);
     ctx.lineTo(topPosition.x, topPosition.y);
     ctx.moveTo(bottomP.x, bottomP.y);
-    ctx.bezierCurveTo(bottomP.x - PIECE_SIZE * 0.12 * edgeMultiplier, bottomP.y - PIECE_SIZE * 0.75, bottomP.x + PIECE_SIZE * 0.25 * edgeMultiplier, bottomP.y + PIECE_SIZE * 0.06, mid.x, mid.y);
-    ctx.lineTo(topPosition.x + 0.5 * PIECE_SIZE * facingMultiplier, mid.y);
+    ctx.bezierCurveTo(bottomP.x - deviceAppropriatePieceSize() * 0.12 * edgeMultiplier, bottomP.y - deviceAppropriatePieceSize() * 0.75, bottomP.x + deviceAppropriatePieceSize() * 0.25 * edgeMultiplier, bottomP.y + deviceAppropriatePieceSize() * 0.06, mid.x, mid.y);
+    ctx.lineTo(topPosition.x + 0.5 * deviceAppropriatePieceSize() * facingMultiplier, mid.y);
     ctx.lineTo(topPosition.x, bottomP.y);
 }
 function drawHorizontal(ctx, leftPosition, facing, edge) {
@@ -61,14 +61,14 @@ function drawHorizontal(ctx, leftPosition, facing, edge) {
     const edgeMultiplier = (edge === Edge.OUTY ? 1 : -1) * facingMultiplier;
     const leftP = Object.assign({}, leftPosition);
     const mid = {
-        y: leftP.y - PIECE_SIZE * 0.25 * edgeMultiplier,
-        x: leftP.x + PIECE_SIZE * 0.5,
+        y: leftP.y - deviceAppropriatePieceSize() * 0.25 * edgeMultiplier,
+        x: leftP.x + deviceAppropriatePieceSize() * 0.5,
     };
-    const rightP = Object.assign(Object.assign({}, leftPosition), { x: leftPosition.x + PIECE_SIZE });
+    const rightP = Object.assign(Object.assign({}, leftPosition), { x: leftPosition.x + deviceAppropriatePieceSize() });
     ctx.moveTo(leftPosition.x, leftPosition.y);
     if (edge === Edge.FLAT) {
         ctx.lineTo(rightP.x, rightP.y);
-        ctx.lineTo(leftPosition.x + 0.5 * PIECE_SIZE, leftPosition.y + 0.5 * PIECE_SIZE * facingMultiplier);
+        ctx.lineTo(leftPosition.x + 0.5 * deviceAppropriatePieceSize(), leftPosition.y + 0.5 * deviceAppropriatePieceSize() * facingMultiplier);
         ctx.lineTo(leftPosition.x, leftPosition.y);
         return;
     }
@@ -76,12 +76,12 @@ function drawHorizontal(ctx, leftPosition, facing, edge) {
     // Draw Curve
     //ctx.lineTo(mid.x, mid.y);
     //console.log('mid', mid);
-    ctx.bezierCurveTo(leftP.x + PIECE_SIZE * 0.75, leftP.y + PIECE_SIZE * 0.12 * edgeMultiplier, leftP.x + PIECE_SIZE * 0.06, leftP.y - PIECE_SIZE * 0.25 * edgeMultiplier, mid.x, mid.y);
-    ctx.lineTo(mid.x, leftP.y + 0.5 * PIECE_SIZE * facingMultiplier);
+    ctx.bezierCurveTo(leftP.x + deviceAppropriatePieceSize() * 0.75, leftP.y + deviceAppropriatePieceSize() * 0.12 * edgeMultiplier, leftP.x + deviceAppropriatePieceSize() * 0.06, leftP.y - deviceAppropriatePieceSize() * 0.25 * edgeMultiplier, mid.x, mid.y);
+    ctx.lineTo(mid.x, leftP.y + 0.5 * deviceAppropriatePieceSize() * facingMultiplier);
     ctx.lineTo(leftP.x, leftP.y);
     ctx.moveTo(rightP.x, rightP.y);
-    ctx.bezierCurveTo(rightP.x - PIECE_SIZE * 0.75, rightP.y + PIECE_SIZE * 0.12 * edgeMultiplier, rightP.x + PIECE_SIZE * 0.06, rightP.y - PIECE_SIZE * 0.25 * edgeMultiplier, mid.x, mid.y);
-    ctx.lineTo(mid.x, leftP.y + 0.5 * PIECE_SIZE * facingMultiplier);
+    ctx.bezierCurveTo(rightP.x - deviceAppropriatePieceSize() * 0.75, rightP.y + deviceAppropriatePieceSize() * 0.12 * edgeMultiplier, rightP.x + deviceAppropriatePieceSize() * 0.06, rightP.y - deviceAppropriatePieceSize() * 0.25 * edgeMultiplier, mid.x, mid.y);
+    ctx.lineTo(mid.x, leftP.y + 0.5 * deviceAppropriatePieceSize() * facingMultiplier);
     ctx.lineTo(rightP.x, rightP.y);
 }
 let img = new Image();
@@ -98,7 +98,7 @@ function drawPhotoInsidePiece(ctx, piece) {
     const fullBleedSegmentWidth = segmentWidth * 2;
     const rowNumber = Math.floor(piece.id / COLUMNS);
     const columnNumber = piece.id % COLUMNS;
-    const fullBleedPieceSize = PIECE_SIZE * 2;
+    const fullBleedPieceSize = deviceAppropriatePieceSize() * 2;
     colsNRows.add(`${columnNumber}${rowNumber}`);
     // Safari doesn't like sneaky negative value source x and source y values.
     // So we start out taking just the generic position of the piece and if it's a negative value for either x or y we 'pan' back a bit to fill in left/bottom-aligned puzzle edges.
@@ -108,11 +108,11 @@ function drawPhotoInsidePiece(ctx, piece) {
     let dy = piece.y;
     if (columnNumber > 0) {
         sx -= 0.5 * segmentWidth;
-        dx -= 0.5 * PIECE_SIZE;
+        dx -= 0.5 * deviceAppropriatePieceSize();
     }
     if (rowNumber > 0) {
         sy -= 0.5 * segmentWidth;
-        dy -= 0.5 * PIECE_SIZE;
+        dy -= 0.5 * deviceAppropriatePieceSize();
     }
     ctx.drawImage(img, sx, sy, fullBleedSegmentWidth, fullBleedSegmentWidth, dx, dy, fullBleedPieceSize, fullBleedPieceSize);
 }

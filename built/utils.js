@@ -1,18 +1,28 @@
 import { COLUMNS, FIT_DISTANCE, PIECE_SIZE, ROWS } from "./constants.js";
 import { isTouchDevice } from "./index.js";
 import { Corner, Edge } from "./types.js";
+export function deviceAppropriatePieceSize() {
+    if (isTouchDevice) {
+        return PIECE_SIZE * 2;
+    }
+    return PIECE_SIZE;
+}
 export function getCursorPosition(canvas, event) {
     const rect = canvas.getBoundingClientRect();
-    const x = (event.clientX || event.touches[0].clientX) - rect.left;
-    const y = (event.clientY || event.touches[0].clientY) - rect.top;
+    const x = (event.clientX ||
+        event.touches[0].clientX) - rect.left;
+    const y = (event.clientY ||
+        event.touches[0].clientY) - rect.top;
     return { x, y };
 }
 export function getPieceForPosition(position, pieces) {
     // working from front to back check which piece is valid
     for (let i = pieces.length - 1; i > -1; i--) {
         let piece = pieces[i];
-        if (position.x < piece.x + PIECE_SIZE && position.x >= piece.x) {
-            if (position.y < piece.y + PIECE_SIZE && position.y >= piece.y) {
+        if (position.x < piece.x + deviceAppropriatePieceSize() &&
+            position.x >= piece.x) {
+            if (position.y < piece.y + deviceAppropriatePieceSize() &&
+                position.y >= piece.y) {
                 return piece;
             }
         }
@@ -28,20 +38,23 @@ export function bringToFront(piece, pieces) {
 export function jumblePieces(canvas, puzzlePieces) {
     // scatter x and y randomly
     puzzlePieces.forEach((piece) => {
-        piece.x = Math.floor(Math.random() * (canvas.width - PIECE_SIZE));
-        piece.y = Math.floor(Math.random() * (canvas.height - PIECE_SIZE));
+        piece.x = Math.floor(Math.random() * (canvas.width - deviceAppropriatePieceSize()));
+        piece.y = Math.floor(Math.random() * (canvas.height - deviceAppropriatePieceSize()));
     });
 }
 export function getCornerPosition(piece, corner) {
     switch (corner) {
         case Corner.BOTTOM_LEFT:
-            return { x: piece.x, y: piece.y + PIECE_SIZE };
+            return { x: piece.x, y: piece.y + deviceAppropriatePieceSize() };
         case Corner.TOP_LEFT:
             return { x: piece.x, y: piece.y };
         case Corner.TOP_RIGHT:
-            return { x: piece.x + PIECE_SIZE, y: piece.y };
+            return { x: piece.x + deviceAppropriatePieceSize(), y: piece.y };
         case Corner.BOTTOM_RIGHT:
-            return { x: piece.x + PIECE_SIZE, y: piece.y + PIECE_SIZE };
+            return {
+                x: piece.x + deviceAppropriatePieceSize(),
+                y: piece.y + deviceAppropriatePieceSize(),
+            };
     }
 }
 function getRandomNonFlatEdge() {
@@ -118,10 +131,13 @@ function distanceBetweenPositions(A, B) {
 }
 export function addNearbyPiece(piece, pieces) {
     let connectedPosition = null;
-    const fitDistance = isTouchDevice ? FIT_DISTANCE * 1.25 : FIT_DISTANCE;
+    const fitDistance = isTouchDevice ? FIT_DISTANCE * 4 : FIT_DISTANCE;
     if (piece.top !== Edge.FLAT && !piece.connected.top) {
         const above = getPieceAbove(piece, pieces);
-        const fitPosition = { x: above.x, y: above.y + PIECE_SIZE };
+        const fitPosition = {
+            x: above.x,
+            y: above.y + deviceAppropriatePieceSize(),
+        };
         if (above && distanceBetweenPositions(piece, fitPosition) < fitDistance) {
             piece.connected.top = above;
             above.connected.bottom = piece;
@@ -130,7 +146,10 @@ export function addNearbyPiece(piece, pieces) {
     }
     if (piece.bottom !== Edge.FLAT && !piece.connected.bottom) {
         const below = getPieceBelow(piece, pieces);
-        const fitPosition = { x: below.x, y: below.y - PIECE_SIZE };
+        const fitPosition = {
+            x: below.x,
+            y: below.y - deviceAppropriatePieceSize(),
+        };
         if (below && distanceBetweenPositions(piece, fitPosition) < fitDistance) {
             piece.connected.bottom = below;
             below.connected.top = piece;
@@ -139,7 +158,7 @@ export function addNearbyPiece(piece, pieces) {
     }
     if (piece.left !== Edge.FLAT && !piece.connected.left) {
         const left = getPieceLeft(piece, pieces);
-        const fitPosition = { x: left.x + PIECE_SIZE, y: left.y };
+        const fitPosition = { x: left.x + deviceAppropriatePieceSize(), y: left.y };
         if (left && distanceBetweenPositions(piece, fitPosition) < fitDistance) {
             piece.connected.left = left;
             left.connected.right = piece;
@@ -148,7 +167,10 @@ export function addNearbyPiece(piece, pieces) {
     }
     if (piece.right !== Edge.FLAT && !piece.connected.right) {
         const right = getPieceRight(piece, pieces);
-        const fitPosition = { x: right.x - PIECE_SIZE, y: right.y };
+        const fitPosition = {
+            x: right.x - deviceAppropriatePieceSize(),
+            y: right.y,
+        };
         if (right && distanceBetweenPositions(piece, fitPosition) < fitDistance) {
             piece.connected.right = right;
             right.connected.left = piece;
@@ -170,27 +192,27 @@ export function moveAllConnectedPieces(draggedPiece) {
     if (draggedPiece.connected.top) {
         const newPosition = {
             x: draggedPiece.x,
-            y: draggedPiece.y - PIECE_SIZE,
+            y: draggedPiece.y - deviceAppropriatePieceSize(),
         };
         moveIfNew(draggedPiece.connected.top, newPosition);
     }
     if (draggedPiece.connected.bottom) {
         const newPosition = {
             x: draggedPiece.x,
-            y: draggedPiece.y + PIECE_SIZE,
+            y: draggedPiece.y + deviceAppropriatePieceSize(),
         };
         moveIfNew(draggedPiece.connected.bottom, newPosition);
     }
     if (draggedPiece.connected.left) {
         const newPosition = {
-            x: draggedPiece.x - PIECE_SIZE,
+            x: draggedPiece.x - deviceAppropriatePieceSize(),
             y: draggedPiece.y,
         };
         moveIfNew(draggedPiece.connected.left, newPosition);
     }
     if (draggedPiece.connected.right) {
         const newPosition = {
-            x: draggedPiece.x + PIECE_SIZE,
+            x: draggedPiece.x + deviceAppropriatePieceSize(),
             y: draggedPiece.y,
         };
         moveIfNew(draggedPiece.connected.right, newPosition);
