@@ -35,6 +35,10 @@ window.addEventListener("load", () => {
     const cnv = getCanvas();
     fitCanvas(cnv);
     registerMouseEvents();
+    // Check if this is a touchscreen
+    if ("maxTouchPoints" in navigator) {
+        isTouchDevice = navigator.maxTouchPoints > 0;
+    }
     // Make Puzzle valid
     setPieceEdges(PUZZLE_STATE);
     // Jumble Pieces up
@@ -84,10 +88,7 @@ function registerMouseEvents() {
     window.addEventListener("mouseup", end);
     window.addEventListener("touchend", end);
     window.addEventListener("mousedown", start);
-    window.addEventListener("touchstart", (e) => {
-        isTouchDevice = true;
-        start(e);
-    });
+    window.addEventListener("touchstart", start);
     window.addEventListener("mousemove", move);
     window.addEventListener("touchmove", move);
 }
