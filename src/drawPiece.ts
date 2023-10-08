@@ -138,7 +138,7 @@ function drawHorizontal(
 
 let img = new Image();
 
-function getImage(): HTMLImageElement {
+export function getImage(): HTMLImageElement {
   if (!img.src) {
     img.src = "/img/image2.png";
   }

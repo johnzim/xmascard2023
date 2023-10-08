@@ -1,12 +1,16 @@
-import { COLUMNS, FIT_DISTANCE, PIECE_SIZE, ROWS } from "./constants.js";
+import { COLUMNS, FIT_DISTANCE, ROWS } from "./constants.js";
 import { isTouchDevice } from "./index.js";
 import { Corner, Edge, Position, PuzzlePiece } from "./types.js";
 
 export function deviceAppropriatePieceSize() {
+  // work out what the max/height width should be.
+  // ideally the jigsaw should take up 1/2 of the screen size/width
+  let puzzleWidth = window.innerWidth;
+
   if (isTouchDevice) {
-    return PIECE_SIZE * 2;
+    return (puzzleWidth * 0.8)  / COLUMNS;
   }
-  return PIECE_SIZE;
+  return (puzzleWidth * 0.5) / COLUMNS;
 }
 
 export function getCursorPosition(

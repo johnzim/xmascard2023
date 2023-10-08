@@ -85,7 +85,7 @@ function drawHorizontal(ctx, leftPosition, facing, edge) {
     ctx.lineTo(rightP.x, rightP.y);
 }
 let img = new Image();
-function getImage() {
+export function getImage() {
     if (!img.src) {
         img.src = "/img/image2.png";
     }
