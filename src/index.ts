@@ -12,6 +12,8 @@ import {
 } from "./utils.js";
 
 import { renderPuzzlePiece } from "./drawPiece.js";
+import { drawImage } from "./drawImage.js";
+import { easeInOutSine } from "./easing.js";
 
 let canvas: HTMLCanvasElement = null;
 
@@ -37,9 +39,12 @@ for (let i = 0; i < COLUMNS; i++) {
   }
 }
 
+let topLeftPiece: PuzzlePiece = PUZZLE_STATE[0];
+
 let clickStartPosition: Position = { x: 0, y: 0 };
 let offset: Position = { x: 0, y: 0 };
 let draggedPiece: PuzzlePiece = null;
+let puzzleComplete = false;
 
 function getCanvas(): HTMLCanvasElement {
   if (canvas) {
@@ -73,12 +78,22 @@ function fitCanvas(canvas: HTMLCanvasElement) {
   canvas.height = window.innerHeight;
 }
 
+function moveFinalMove() {
+    finalMove += 0.0018;
+    if (finalMove < 1) {
+      setTimeout(moveFinalMove, 1);
+    }
+}
+
 function end() {
   if (draggedPiece) {
     addNearbyPiece(draggedPiece, PUZZLE_STATE);
     PUZZLE_STATE.forEach((piece) => addNearbyPiece(piece, PUZZLE_STATE));
-    if (hasPuzzleFinished(PUZZLE_STATE)) {
-      window.alert("ALL DONE!");
+    if (hasPuzzleFinished(PUZZLE_STATE) && !puzzleComplete) {
+      puzzleComplete = true;
+      // Set the initial position to the location of the top left piece
+      initialPosition = {x: topLeftPiece.x, y: topLeftPiece.y};
+      moveFinalMove();
     }
   }
   draggedPiece = null;
@@ -121,6 +136,11 @@ function registerMouseEvents() {
   window.addEventListener("touchmove", move);
 }
 
+// Once the puzzle is finished the puzzle needs to move to the centre of the
+let finalMove = 0;
+let initialPosition: Position = {x:0, y:0} ;
+let finalPosition: Position = {x: 0, y:0};
+
 function renderLoop() {
   const canvas = getCanvas();
   const ctx = canvas.getContext("2d");
@@ -128,8 +148,14 @@ function renderLoop() {
   // Clear the canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // render pieces
-  PUZZLE_STATE.forEach((puzzlePiece) => renderPuzzlePiece(ctx, puzzlePiece));
+  if (!puzzleComplete) {
+    // render pieces
+    PUZZLE_STATE.forEach((puzzlePiece) => renderPuzzlePiece(ctx, puzzlePiece));
+  } else {
+    drawImage(ctx, {x: topLeftPiece.x, y: topLeftPiece.y});
+    topLeftPiece.x = initialPosition.x + ((finalPosition.x - initialPosition.x) * easeInOutSine(finalMove));
+    topLeftPiece.y = initialPosition.y + ((finalPosition.y - initialPosition.y) * easeInOutSine(finalMove));
+  }
 
   window.requestAnimationFrame(renderLoop);
 }

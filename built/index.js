@@ -2,6 +2,8 @@ import { COLUMNS, ROWS } from "./constants.js";
 import { Edge } from "./types.js";
 import { bringToFront, getCursorPosition, getPieceForPosition, jumblePieces, addNearbyPiece, setPieceEdges, moveAllConnectedPieces, hasPuzzleFinished, } from "./utils.js";
 import { renderPuzzlePiece } from "./drawPiece.js";
+import { drawImage } from "./drawImage.js";
+import { easeInOutSine } from "./easing.js";
 let canvas = null;
 export let isTouchDevice = false;
 // Pieces are arranged such that the State is also a Z-buffer
@@ -22,9 +24,11 @@ for (let i = 0; i < COLUMNS; i++) {
         });
     }
 }
+let topLeftPiece = PUZZLE_STATE[0];
 let clickStartPosition = { x: 0, y: 0 };
 let offset = { x: 0, y: 0 };
 let draggedPiece = null;
+let puzzleComplete = false;
 function getCanvas() {
     if (canvas) {
         return canvas;
@@ -50,12 +54,21 @@ function fitCanvas(canvas) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
+function moveFinalMove() {
+    finalMove += 0.0018;
+    if (finalMove < 1) {
+        setTimeout(moveFinalMove, 1);
+    }
+}
 function end() {
     if (draggedPiece) {
         addNearbyPiece(draggedPiece, PUZZLE_STATE);
         PUZZLE_STATE.forEach((piece) => addNearbyPiece(piece, PUZZLE_STATE));
-        if (hasPuzzleFinished(PUZZLE_STATE)) {
-            window.alert("ALL DONE!");
+        if (hasPuzzleFinished(PUZZLE_STATE) && !puzzleComplete) {
+            puzzleComplete = true;
+            // Set the initial position to the location of the top left piece
+            initialPosition = { x: topLeftPiece.x, y: topLeftPiece.y };
+            moveFinalMove();
         }
     }
     draggedPiece = null;
@@ -92,12 +105,23 @@ function registerMouseEvents() {
     window.addEventListener("mousemove", move);
     window.addEventListener("touchmove", move);
 }
+// Once the puzzle is finished the puzzle needs to move to the centre of the
+let finalMove = 0;
+let initialPosition = { x: 0, y: 0 };
+let finalPosition = { x: 0, y: 0 };
 function renderLoop() {
     const canvas = getCanvas();
     const ctx = canvas.getContext("2d");
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // render pieces
-    PUZZLE_STATE.forEach((puzzlePiece) => renderPuzzlePiece(ctx, puzzlePiece));
+    if (!puzzleComplete) {
+        // render pieces
+        PUZZLE_STATE.forEach((puzzlePiece) => renderPuzzlePiece(ctx, puzzlePiece));
+    }
+    else {
+        drawImage(ctx, { x: topLeftPiece.x, y: topLeftPiece.y });
+        topLeftPiece.x = initialPosition.x + ((finalPosition.x - initialPosition.x) * easeInOutSine(finalMove));
+        topLeftPiece.y = initialPosition.y + ((finalPosition.y - initialPosition.y) * easeInOutSine(finalMove));
+    }
     window.requestAnimationFrame(renderLoop);
 }
