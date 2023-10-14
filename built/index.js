@@ -3,7 +3,8 @@ import { Edge } from "./types.js";
 import { bringToFront, getCursorPosition, getPieceForPosition, jumblePieces, addNearbyPiece, setPieceEdges, moveAllConnectedPieces, hasPuzzleFinished, } from "./utils.js";
 import { renderPuzzlePiece } from "./drawPiece.js";
 import { drawImage } from "./drawImage.js";
-import { easeInOutSine } from "./easing.js";
+import { easeOutQuad } from "./easing.js";
+import TransitionController from "./transitionController.js";
 let canvas = null;
 export let isTouchDevice = false;
 // Pieces are arranged such that the State is also a Z-buffer
@@ -29,6 +30,8 @@ let clickStartPosition = { x: 0, y: 0 };
 let offset = { x: 0, y: 0 };
 let draggedPiece = null;
 let puzzleComplete = false;
+let finalImageInitialPosition = { x: 0, y: 0 };
+let finalImageFinalPosition = { x: 0, y: 0 };
 function getCanvas() {
     if (canvas) {
         return canvas;
@@ -54,12 +57,6 @@ function fitCanvas(canvas) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
-function moveFinalMove() {
-    finalMove += 0.0018;
-    if (finalMove < 1) {
-        setTimeout(moveFinalMove, 1);
-    }
-}
 function end() {
     if (draggedPiece) {
         addNearbyPiece(draggedPiece, PUZZLE_STATE);
@@ -67,8 +64,8 @@ function end() {
         if (hasPuzzleFinished(PUZZLE_STATE) && !puzzleComplete) {
             puzzleComplete = true;
             // Set the initial position to the location of the top left piece
-            initialPosition = { x: topLeftPiece.x, y: topLeftPiece.y };
-            moveFinalMove();
+            finalImageInitialPosition = { x: topLeftPiece.x, y: topLeftPiece.y };
+            TransitionController.startFinalMove();
         }
     }
     draggedPiece = null;
@@ -105,10 +102,6 @@ function registerMouseEvents() {
     window.addEventListener("mousemove", move);
     window.addEventListener("touchmove", move);
 }
-// Once the puzzle is finished the puzzle needs to move to the centre of the
-let finalMove = 0;
-let initialPosition = { x: 0, y: 0 };
-let finalPosition = { x: 0, y: 0 };
 function renderLoop() {
     const canvas = getCanvas();
     const ctx = canvas.getContext("2d");
@@ -120,8 +113,14 @@ function renderLoop() {
     }
     else {
         drawImage(ctx, { x: topLeftPiece.x, y: topLeftPiece.y });
-        topLeftPiece.x = initialPosition.x + ((finalPosition.x - initialPosition.x) * easeInOutSine(finalMove));
-        topLeftPiece.y = initialPosition.y + ((finalPosition.y - initialPosition.y) * easeInOutSine(finalMove));
+        topLeftPiece.x =
+            finalImageInitialPosition.x +
+                (finalImageFinalPosition.x - finalImageInitialPosition.x) *
+                    easeOutQuad(TransitionController.finalMove);
+        topLeftPiece.y =
+            finalImageInitialPosition.y +
+                (finalImageFinalPosition.y - finalImageInitialPosition.y) *
+                    easeOutQuad(TransitionController.finalMove);
     }
     window.requestAnimationFrame(renderLoop);
 }
