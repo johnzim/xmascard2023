@@ -1,4 +1,4 @@
-import { COLUMNS, FIT_DISTANCE, ROWS } from "./constants.js";
+import { COLUMNS, ROWS } from "./constants.js";
 import { isTouchDevice } from "./index.js";
 import { Corner, Edge } from "./types.js";
 export function deviceAppropriatePieceSize() {
@@ -140,7 +140,7 @@ function distanceBetweenPositions(A, B) {
 }
 export function addNearbyPiece(piece, pieces) {
     let connectedPosition = null;
-    const fitDistance = isTouchDevice ? FIT_DISTANCE * 4 : FIT_DISTANCE;
+    const fitDistance = isTouchDevice ? deviceAppropriatePieceSize() * 0.2 : deviceAppropriatePieceSize() * 0.1;
     if (piece.top !== Edge.FLAT && !piece.connected.top) {
         const above = getPieceAbove(piece, pieces);
         const fitPosition = {
