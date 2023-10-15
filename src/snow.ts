@@ -40,7 +40,7 @@ const renderSnowflake = (
   const y =
     initialOffset +
     ((frameCount * (flakeSpeed * 0.018)) % (ctx.canvas.height + SNOWFLAKE_Y_OFFSET));
-  const x = (index * 20) % ctx.canvas.width;
+  const x = (index * 20 * (rnd / 80)) % ctx.canvas.width;
   ctx.arc(x, y, BASE_SNOWFLAKE_SIZE + (rnd / 100), 0, 2 * Math.PI);
   ctx.fill();
 };

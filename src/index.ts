@@ -64,16 +64,20 @@ window.addEventListener("load", () => {
   fitCanvas(cnv);
   registerMouseEvents();
 
-  // Set the place where the image should be at the end
-  const width = deviceAppropriatePieceSize() * COLUMNS;
-  const height = deviceAppropriatePieceSize() * ROWS;
-  finalImageFinalPosition.x = cnv.width / 2 - width / 2;
-  finalImageFinalPosition.y = cnv.height / 2 - height / 2;
 
   // Check if this is a touchscreen
   if ("maxTouchPoints" in navigator) {
     isTouchDevice = navigator.maxTouchPoints > 0;
   }
+
+  // Set the place where the image should be at the end
+  const height = deviceAppropriatePieceSize() * ROWS;
+  if (isTouchDevice) {
+    finalImageFinalPosition.x = cnv.width * 0.10;
+  } else {
+    finalImageFinalPosition.x = cnv.width * 0.25;
+  }
+  finalImageFinalPosition.y = cnv.height / 2 - height / 2;
 
   // Make Puzzle valid
   setPieceEdges(PUZZLE_STATE);
