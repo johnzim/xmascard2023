@@ -15,8 +15,15 @@ body {
   position: fixed;
   height: 100%;
   width: 100%;
-  background: linear-gradient(0deg, rgba(204,221,238,1) 27%, rgba(182,199,216,1) 38%, rgba(110,128,145,1) 70%, rgba(1,36,70,1) 84%);
-  background: linear-gradient(0deg, rgba(255,255,255,1) 3%, rgba(232,239,247,1) 8%, rgba(204,221,238,1) 27%, rgba(182,199,216,1) 38%, rgba(110,128,145,1) 70%, rgba(1,36,70,1) 84%);
+  background: linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 1) 3%,
+    rgba(232, 239, 247, 1) 8%,
+    rgba(204, 221, 238, 1) 27%,
+    rgba(182, 199, 216, 1) 38%,
+    rgba(110, 128, 145, 1) 70%,
+    rgba(1, 36, 70, 1) 84%
+  );
 }
 
 .title-block {
@@ -26,10 +33,16 @@ body {
 
 h1 {
   text-align: center;
-  font-size: 3rem;
+  font-size: 5rem;
   cursor: default;
   text-shadow: 2px 2px 8px white;
   color: white;
+}
+
+@media (max-width: 1000px) {
+  h1 {
+    font-size: 5rem;
+  }
 }
 
 #cnv {
