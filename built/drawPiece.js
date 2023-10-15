@@ -68,7 +68,8 @@ function drawHorizontal(ctx, leftPosition, facing, edge) {
         x: leftP.x + deviceAppropriatePieceSize() * 0.5,
     };
     const rightP = Object.assign(Object.assign({}, leftPosition), { x: leftPosition.x + deviceAppropriatePieceSize() });
-    ctx.moveTo(leftPosition.x, leftPosition.y);
+    // the extra -1 helps cancel out a white line issue
+    ctx.moveTo(leftPosition.x, leftPosition.y - 1);
     if (edge === Edge.FLAT) {
         ctx.lineTo(rightP.x, rightP.y);
         ctx.lineTo(leftPosition.x + 0.5 * deviceAppropriatePieceSize(), leftPosition.y + 0.5 * deviceAppropriatePieceSize() * facingMultiplier);
