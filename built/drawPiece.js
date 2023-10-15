@@ -39,7 +39,10 @@ function drawVertical(ctx, topPosition, facing, edge) {
         x: topP.x + 0.25 * deviceAppropriatePieceSize() * edgeMultiplier,
         y: topP.y + 0.5 * deviceAppropriatePieceSize(),
     };
-    const bottomP = { x: topPosition.x, y: topPosition.y + deviceAppropriatePieceSize() };
+    const bottomP = {
+        x: topPosition.x,
+        y: topPosition.y + deviceAppropriatePieceSize(),
+    };
     ctx.moveTo(topPosition.x, topPosition.y);
     if (edge === Edge.FLAT) {
         ctx.lineTo(bottomP.x, bottomP.y);
@@ -85,8 +88,12 @@ function drawHorizontal(ctx, leftPosition, facing, edge) {
     ctx.lineTo(rightP.x, rightP.y);
 }
 let img = new Image();
+export let imageLoaded = false;
 export function getImage() {
     if (!img.src) {
+        img.addEventListener("load", () => {
+            imageLoaded = true;
+        });
         img.src = "/img/image2.png";
     }
     return img;

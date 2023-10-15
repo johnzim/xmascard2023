@@ -1,7 +1,7 @@
 import { COLUMNS, ROWS } from "./constants.js";
 import { Edge } from "./types.js";
 import { bringToFront, getCursorPosition, getPieceForPosition, jumblePieces, addNearbyPiece, setPieceEdges, moveAllConnectedPieces, hasPuzzleFinished, } from "./utils.js";
-import { renderPuzzlePiece } from "./drawPiece.js";
+import { imageLoaded, renderPuzzlePiece } from "./drawPiece.js";
 import { drawImage } from "./drawImage.js";
 import { easeOutQuad } from "./easing.js";
 import TransitionController from "./transitionController.js";
@@ -107,6 +107,10 @@ function renderLoop() {
     const ctx = canvas.getContext("2d");
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (!imageLoaded) {
+        ctx.font = "48px serif";
+        ctx.fillText("Almost there...", (canvas.width / 2) - 100, canvas.height / 2);
+    }
     if (!puzzleComplete) {
         // render pieces
         PUZZLE_STATE.forEach((puzzlePiece) => renderPuzzlePiece(ctx, puzzlePiece));

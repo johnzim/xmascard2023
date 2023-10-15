@@ -11,7 +11,7 @@ import {
   hasPuzzleFinished,
 } from "./utils.js";
 
-import { renderPuzzlePiece } from "./drawPiece.js";
+import { getImage, imageLoaded, renderPuzzlePiece } from "./drawPiece.js";
 import { drawImage } from "./drawImage.js";
 import { easeOut, easeOutOutSine, easeOutQuad } from "./easing.js";
 import TransitionController from "./transitionController.js";
@@ -139,6 +139,11 @@ function renderLoop() {
 
   // Clear the canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (!imageLoaded) {
+    ctx.font = "48px serif";
+    ctx.fillText("Almost there...", (canvas.width / 2) - 100, canvas.height / 2);
+  }
 
   if (!puzzleComplete) {
     // render pieces

@@ -1,4 +1,4 @@
-import { COLUMNS} from "./constants.js";
+import { COLUMNS } from "./constants.js";
 import { deviceAppropriatePieceSize, getCornerPosition } from "./utils.js";
 import { Facing, Position, PuzzlePiece, Edge, Corner } from "./types.js";
 
@@ -53,11 +53,17 @@ function drawVertical(
     x: topP.x + 0.25 * deviceAppropriatePieceSize() * edgeMultiplier,
     y: topP.y + 0.5 * deviceAppropriatePieceSize(),
   };
-  const bottomP = { x: topPosition.x, y: topPosition.y + deviceAppropriatePieceSize() };
+  const bottomP = {
+    x: topPosition.x,
+    y: topPosition.y + deviceAppropriatePieceSize(),
+  };
   ctx.moveTo(topPosition.x, topPosition.y);
   if (edge === Edge.FLAT) {
     ctx.lineTo(bottomP.x, bottomP.y);
-    ctx.lineTo(topPosition.x + 0.5 * deviceAppropriatePieceSize() * facingMultiplier, mid.y);
+    ctx.lineTo(
+      topPosition.x + 0.5 * deviceAppropriatePieceSize() * facingMultiplier,
+      mid.y
+    );
     ctx.lineTo(topPosition.x, topPosition.y);
     return;
   }
@@ -70,7 +76,10 @@ function drawVertical(
     mid.x,
     mid.y
   );
-  ctx.lineTo(topPosition.x + 0.5 * deviceAppropriatePieceSize() * facingMultiplier, mid.y);
+  ctx.lineTo(
+    topPosition.x + 0.5 * deviceAppropriatePieceSize() * facingMultiplier,
+    mid.y
+  );
   ctx.lineTo(topPosition.x, topPosition.y);
   ctx.moveTo(bottomP.x, bottomP.y);
   ctx.bezierCurveTo(
@@ -81,7 +90,10 @@ function drawVertical(
     mid.x,
     mid.y
   );
-  ctx.lineTo(topPosition.x + 0.5 * deviceAppropriatePieceSize() * facingMultiplier, mid.y);
+  ctx.lineTo(
+    topPosition.x + 0.5 * deviceAppropriatePieceSize() * facingMultiplier,
+    mid.y
+  );
   ctx.lineTo(topPosition.x, bottomP.y);
 }
 
@@ -98,7 +110,10 @@ function drawHorizontal(
     y: leftP.y - deviceAppropriatePieceSize() * 0.25 * edgeMultiplier,
     x: leftP.x + deviceAppropriatePieceSize() * 0.5,
   };
-  const rightP = { ...leftPosition, x: leftPosition.x + deviceAppropriatePieceSize() };
+  const rightP = {
+    ...leftPosition,
+    x: leftPosition.x + deviceAppropriatePieceSize(),
+  };
   ctx.moveTo(leftPosition.x, leftPosition.y);
   if (edge === Edge.FLAT) {
     ctx.lineTo(rightP.x, rightP.y);
@@ -121,7 +136,10 @@ function drawHorizontal(
     mid.x,
     mid.y
   );
-  ctx.lineTo(mid.x, leftP.y + 0.5 * deviceAppropriatePieceSize() * facingMultiplier);
+  ctx.lineTo(
+    mid.x,
+    leftP.y + 0.5 * deviceAppropriatePieceSize() * facingMultiplier
+  );
   ctx.lineTo(leftP.x, leftP.y);
   ctx.moveTo(rightP.x, rightP.y);
   ctx.bezierCurveTo(
@@ -132,14 +150,22 @@ function drawHorizontal(
     mid.x,
     mid.y
   );
-  ctx.lineTo(mid.x, leftP.y + 0.5 * deviceAppropriatePieceSize() * facingMultiplier);
+  ctx.lineTo(
+    mid.x,
+    leftP.y + 0.5 * deviceAppropriatePieceSize() * facingMultiplier
+  );
   ctx.lineTo(rightP.x, rightP.y);
 }
 
 let img = new Image();
 
+export let imageLoaded = false;
+
 export function getImage(): HTMLImageElement {
   if (!img.src) {
+    img.addEventListener("load", () => {
+      imageLoaded = true;
+    });
     img.src = "/img/image2.png";
   }
 
