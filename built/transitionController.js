@@ -8,7 +8,7 @@ class TransitionController {
             }
         };
         this._moveFinalMove = () => {
-            this.finalMove += 0.0015;
+            this.finalMove += 0.0018;
             if (this.finalMove < 1) {
                 setTimeout(this._moveFinalMove, 1);
             }

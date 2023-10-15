@@ -1,10 +1,11 @@
 import { COLUMNS, ROWS } from "./constants.js";
 import { Edge } from "./types.js";
-import { bringToFront, getCursorPosition, getPieceForPosition, jumblePieces, addNearbyPiece, setPieceEdges, moveAllConnectedPieces, hasPuzzleFinished, } from "./utils.js";
+import { bringToFront, getCursorPosition, getPieceForPosition, jumblePieces, addNearbyPiece, setPieceEdges, moveAllConnectedPieces, hasPuzzleFinished, deviceAppropriatePieceSize, } from "./utils.js";
 import { imageLoaded, renderPuzzlePiece } from "./drawPiece.js";
 import { drawImage } from "./drawImage.js";
-import { easeOutQuad } from "./easing.js";
+import { easeOutElastic } from "./easing.js";
 import TransitionController from "./transitionController.js";
+import { renderBlizzard } from "./snow.js";
 let canvas = null;
 export let isTouchDevice = false;
 // Pieces are arranged such that the State is also a Z-buffer
@@ -42,6 +43,11 @@ window.addEventListener("load", () => {
     const cnv = getCanvas();
     fitCanvas(cnv);
     registerMouseEvents();
+    // Set the place where the image should be at the end
+    const width = deviceAppropriatePieceSize() * COLUMNS;
+    const height = deviceAppropriatePieceSize() * ROWS;
+    finalImageFinalPosition.x = cnv.width / 2 - width / 2;
+    finalImageFinalPosition.y = cnv.height / 2 - height / 2;
     // Check if this is a touchscreen
     if ("maxTouchPoints" in navigator) {
         isTouchDevice = navigator.maxTouchPoints > 0;
@@ -107,9 +113,11 @@ function renderLoop() {
     const ctx = canvas.getContext("2d");
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Render Snow
+    renderBlizzard(ctx);
     if (!imageLoaded) {
         ctx.font = "48px serif";
-        ctx.fillText("Almost there...", (canvas.width / 2) - 100, canvas.height / 2);
+        ctx.fillText("Almost there...", canvas.width / 2 - 100, canvas.height / 2);
     }
     if (!puzzleComplete) {
         // render pieces
@@ -120,11 +128,11 @@ function renderLoop() {
         topLeftPiece.x =
             finalImageInitialPosition.x +
                 (finalImageFinalPosition.x - finalImageInitialPosition.x) *
-                    easeOutQuad(TransitionController.finalMove);
+                    easeOutElastic(TransitionController.finalMove);
         topLeftPiece.y =
             finalImageInitialPosition.y +
                 (finalImageFinalPosition.y - finalImageInitialPosition.y) *
-                    easeOutQuad(TransitionController.finalMove);
+                    easeOutElastic(TransitionController.finalMove);
     }
     window.requestAnimationFrame(renderLoop);
 }

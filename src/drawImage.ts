@@ -18,7 +18,8 @@ export function drawImage(
   const ratio = height / width;
 
   // width and height should start at the appropriate size and then rescale to the full screen
-  width += widthDelta * TransitionController.finalMove;
+  //width += widthDelta * TransitionController.finalMove;
 
+  //context.drawImage(getImage(), topLeft.x, topLeft.y, width, width * ratio);
   context.drawImage(getImage(), topLeft.x, topLeft.y, width, width * ratio);
 }
