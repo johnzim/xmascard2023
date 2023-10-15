@@ -50,8 +50,8 @@ function drawVertical(
   const edgeMultiplier = (edge === Edge.OUTY ? 1 : -1) * facingMultiplier * -1;
   const topP = { ...topPosition };
   const mid = {
-    x: topP.x + 0.25 * deviceAppropriatePieceSize() * edgeMultiplier,
-    y: topP.y + 0.5 * deviceAppropriatePieceSize(),
+    x: Math.round(topP.x + 0.25 * deviceAppropriatePieceSize() * edgeMultiplier),
+    y: Math.round(topP.y + 0.5 * deviceAppropriatePieceSize()),
   };
   const bottomP = {
     x: topPosition.x,
@@ -80,7 +80,7 @@ function drawVertical(
     topPosition.x + 0.5 * deviceAppropriatePieceSize() * facingMultiplier,
     mid.y
   );
-  ctx.lineTo(topPosition.x, topPosition.y);
+  //ctx.lineTo(topPosition.x, topPosition.y);
   ctx.moveTo(bottomP.x, bottomP.y);
   ctx.bezierCurveTo(
     bottomP.x - deviceAppropriatePieceSize() * 0.12 * edgeMultiplier,
@@ -94,7 +94,7 @@ function drawVertical(
     topPosition.x + 0.5 * deviceAppropriatePieceSize() * facingMultiplier,
     mid.y
   );
-  ctx.lineTo(topPosition.x, bottomP.y);
+  ctx.lineTo(bottomP.x, bottomP.y);
 }
 
 function drawHorizontal(
@@ -107,15 +107,14 @@ function drawHorizontal(
   const edgeMultiplier = (edge === Edge.OUTY ? 1 : -1) * facingMultiplier;
   const leftP = { ...leftPosition };
   const mid = {
-    y: leftP.y - deviceAppropriatePieceSize() * 0.25 * edgeMultiplier,
-    x: leftP.x + deviceAppropriatePieceSize() * 0.5,
+    y: Math.round(leftP.y - deviceAppropriatePieceSize() * 0.25 * edgeMultiplier),
+    x: Math.round(leftP.x + deviceAppropriatePieceSize() * 0.5),
   };
   const rightP = {
     ...leftPosition,
-    x: leftPosition.x + deviceAppropriatePieceSize(),
+    x: Math.round(leftPosition.x + deviceAppropriatePieceSize()),
   };
-  // the extra -1 helps cancel out a white line issue
-  ctx.moveTo(leftPosition.x, leftPosition.y -1);
+  ctx.moveTo(leftPosition.x, leftPosition.y);
   if (edge === Edge.FLAT) {
     ctx.lineTo(rightP.x, rightP.y);
     ctx.lineTo(
@@ -125,10 +124,7 @@ function drawHorizontal(
     ctx.lineTo(leftPosition.x, leftPosition.y);
     return;
   }
-  //console.log('leftPosition', leftPosition);
   // Draw Curve
-  //ctx.lineTo(mid.x, mid.y);
-  //console.log('mid', mid);
   ctx.bezierCurveTo(
     leftP.x + deviceAppropriatePieceSize() * 0.75,
     leftP.y + deviceAppropriatePieceSize() * 0.12 * edgeMultiplier,

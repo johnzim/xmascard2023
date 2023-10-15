@@ -36,8 +36,8 @@ function drawVertical(ctx, topPosition, facing, edge) {
     const edgeMultiplier = (edge === Edge.OUTY ? 1 : -1) * facingMultiplier * -1;
     const topP = Object.assign({}, topPosition);
     const mid = {
-        x: topP.x + 0.25 * deviceAppropriatePieceSize() * edgeMultiplier,
-        y: topP.y + 0.5 * deviceAppropriatePieceSize(),
+        x: Math.round(topP.x + 0.25 * deviceAppropriatePieceSize() * edgeMultiplier),
+        y: Math.round(topP.y + 0.5 * deviceAppropriatePieceSize()),
     };
     const bottomP = {
         x: topPosition.x,
@@ -53,33 +53,29 @@ function drawVertical(ctx, topPosition, facing, edge) {
     // Draw Curve
     ctx.bezierCurveTo(topP.x - deviceAppropriatePieceSize() * 0.12 * edgeMultiplier, topP.y + deviceAppropriatePieceSize() * 0.75, topP.x + deviceAppropriatePieceSize() * 0.25 * edgeMultiplier, topP.y + deviceAppropriatePieceSize() * 0.06, mid.x, mid.y);
     ctx.lineTo(topPosition.x + 0.5 * deviceAppropriatePieceSize() * facingMultiplier, mid.y);
-    ctx.lineTo(topPosition.x, topPosition.y);
+    //ctx.lineTo(topPosition.x, topPosition.y);
     ctx.moveTo(bottomP.x, bottomP.y);
     ctx.bezierCurveTo(bottomP.x - deviceAppropriatePieceSize() * 0.12 * edgeMultiplier, bottomP.y - deviceAppropriatePieceSize() * 0.75, bottomP.x + deviceAppropriatePieceSize() * 0.25 * edgeMultiplier, bottomP.y + deviceAppropriatePieceSize() * 0.06, mid.x, mid.y);
     ctx.lineTo(topPosition.x + 0.5 * deviceAppropriatePieceSize() * facingMultiplier, mid.y);
-    ctx.lineTo(topPosition.x, bottomP.y);
+    ctx.lineTo(bottomP.x, bottomP.y);
 }
 function drawHorizontal(ctx, leftPosition, facing, edge) {
     const facingMultiplier = facing === Facing.UP ? 1 : -1;
     const edgeMultiplier = (edge === Edge.OUTY ? 1 : -1) * facingMultiplier;
     const leftP = Object.assign({}, leftPosition);
     const mid = {
-        y: leftP.y - deviceAppropriatePieceSize() * 0.25 * edgeMultiplier,
-        x: leftP.x + deviceAppropriatePieceSize() * 0.5,
+        y: Math.round(leftP.y - deviceAppropriatePieceSize() * 0.25 * edgeMultiplier),
+        x: Math.round(leftP.x + deviceAppropriatePieceSize() * 0.5),
     };
-    const rightP = Object.assign(Object.assign({}, leftPosition), { x: leftPosition.x + deviceAppropriatePieceSize() });
-    // the extra -1 helps cancel out a white line issue
-    ctx.moveTo(leftPosition.x, leftPosition.y - 1);
+    const rightP = Object.assign(Object.assign({}, leftPosition), { x: Math.round(leftPosition.x + deviceAppropriatePieceSize()) });
+    ctx.moveTo(leftPosition.x, leftPosition.y);
     if (edge === Edge.FLAT) {
         ctx.lineTo(rightP.x, rightP.y);
         ctx.lineTo(leftPosition.x + 0.5 * deviceAppropriatePieceSize(), leftPosition.y + 0.5 * deviceAppropriatePieceSize() * facingMultiplier);
         ctx.lineTo(leftPosition.x, leftPosition.y);
         return;
     }
-    //console.log('leftPosition', leftPosition);
     // Draw Curve
-    //ctx.lineTo(mid.x, mid.y);
-    //console.log('mid', mid);
     ctx.bezierCurveTo(leftP.x + deviceAppropriatePieceSize() * 0.75, leftP.y + deviceAppropriatePieceSize() * 0.12 * edgeMultiplier, leftP.x + deviceAppropriatePieceSize() * 0.06, leftP.y - deviceAppropriatePieceSize() * 0.25 * edgeMultiplier, mid.x, mid.y);
     ctx.lineTo(mid.x, leftP.y + 0.5 * deviceAppropriatePieceSize() * facingMultiplier);
     ctx.lineTo(leftP.x, leftP.y);

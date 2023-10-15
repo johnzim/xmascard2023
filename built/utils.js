@@ -6,9 +6,15 @@ export function deviceAppropriatePieceSize() {
     // ideally the jigsaw should take up 1/2 of the screen size/width
     let puzzleWidth = window.innerWidth;
     if (isTouchDevice) {
-        return (puzzleWidth * 0.8) / COLUMNS;
+        return forceEven(Math.round((puzzleWidth * 0.8) / COLUMNS));
     }
-    return (puzzleWidth * 0.5) / COLUMNS;
+    return forceEven(Math.round((puzzleWidth * 0.5) / COLUMNS));
+}
+function forceEven(x) {
+    if (x % 2 !== 0) {
+        return x + 1;
+    }
+    return x;
 }
 export function getCursorPosition(canvas, event) {
     const rect = canvas.getBoundingClientRect();
