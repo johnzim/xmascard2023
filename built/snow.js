@@ -1,5 +1,5 @@
 // Should make some snowflakes and deposit them
-let frameCount = 800;
+let frameCount = 8000;
 const NUM_SNOWFLAKES = 1300;
 const BASE_SNOWFLAKE_SIZE = 2;
 const SNOWFLAKE_Y_OFFSET = 200;
@@ -27,10 +27,10 @@ const renderSnowflake = (ctx, index, frameCount) => {
     // The Snowflakes should start with a Y Offset but to compensate for that and to avoid snowflakes 'popping' into screen, we subtract an Offset from the Y. We'll have to add that Offset in later to the canvas wrap around to prevent snowflakes from disappearing too early too
     const initialOffset = -SNOWFLAKE_Y_OFFSET + rnd;
     // Different flakes fall at 20 different speeds with a minimum speed of 1
-    const flakeSpeed = (rnd % 20) + 1;
+    const flakeSpeed = rnd + 3;
     const y = initialOffset +
-        ((frameCount * (flakeSpeed * 0.15)) % (ctx.canvas.height + SNOWFLAKE_Y_OFFSET));
+        ((frameCount * (flakeSpeed * 0.018)) % (ctx.canvas.height + SNOWFLAKE_Y_OFFSET));
     const x = (index * 20) % ctx.canvas.width;
-    ctx.arc(x, y, BASE_SNOWFLAKE_SIZE + (rnd / 200), 0, 2 * Math.PI);
+    ctx.arc(x, y, BASE_SNOWFLAKE_SIZE + (rnd / 100), 0, 2 * Math.PI);
     ctx.fill();
 };
