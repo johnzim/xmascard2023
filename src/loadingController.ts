@@ -2,6 +2,7 @@ import { easeOutQuint } from "./easing.js";
 
 class LoadingController {
   count = 0;
+  // The speed is initially set very low
   speed = 0.00018;
 
   getProgress = () => {

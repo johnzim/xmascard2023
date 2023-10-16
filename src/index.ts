@@ -80,7 +80,7 @@ window.addEventListener("load", () => {
   }
   finalImageFinalPosition.y = cnv.height / 2 - height / 2;
 
-  setTimeout(LoadingController.startLoading, 1000);
+  setTimeout(LoadingController.startLoading, 100);
 
   // Make Puzzle valid
   setPieceEdges(PUZZLE_STATE);
@@ -158,7 +158,12 @@ function renderLoop() {
   // Render Snow
   renderBlizzard(ctx);
 
-  drawLoadingBar(ctx);
+  const drawn = drawLoadingBar(ctx);
+
+  // If the loading bar was drawn, don't display any puzzle pieces
+  if (drawn) {
+    return window.requestAnimationFrame(renderLoop);
+  }
 
   if (!puzzleComplete) {
     // render pieces

@@ -91,14 +91,15 @@ export function getImage() {
     if (!img.src) {
         img.addEventListener("load", () => {
             imageLoaded = true;
+            if (LoadingController.count === 0) {
+                LoadingController.setSpeed(0.5);
+                LoadingController.setSpeed(0.005);
+            }
+            else {
+                LoadingController.setSpeed(0.005);
+            }
         });
         img.src = "/img/image2.png";
-        if (LoadingController.count === 0) {
-            LoadingController.setSpeed(1);
-        }
-        else {
-            LoadingController.setSpeed(0.005);
-        }
     }
     return img;
 }
