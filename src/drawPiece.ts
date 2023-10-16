@@ -2,6 +2,7 @@ import { COLUMNS } from "./constants.js";
 import { deviceAppropriatePieceSize, getCornerPosition } from "./utils.js";
 import { Facing, Position, PuzzlePiece, Edge, Corner } from "./types.js";
 import LoadingController from "./loadingController.js";
+import loadingController from "./loadingController.js";
 
 export function renderPuzzlePiece(
   ctx: CanvasRenderingContext2D,
@@ -169,7 +170,11 @@ export function getImage(): HTMLImageElement {
       imageLoaded = true;
     });
     img.src = "/img/image2.png";
-    LoadingController.setSpeed(0.005);
+    if (LoadingController.count === 0) {
+      LoadingController.setSpeed(1);
+    } else {
+      LoadingController.setSpeed(0.005);
+    }
   }
 
   return img;

@@ -93,7 +93,12 @@ export function getImage() {
             imageLoaded = true;
         });
         img.src = "/img/image2.png";
-        LoadingController.setSpeed(0.005);
+        if (LoadingController.count === 0) {
+            LoadingController.setSpeed(1);
+        }
+        else {
+            LoadingController.setSpeed(0.005);
+        }
     }
     return img;
 }

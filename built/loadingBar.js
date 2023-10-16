@@ -2,7 +2,7 @@ import loadingController from "./loadingController.js";
 export function drawLoadingBar(ctx) {
     const barWidth = ctx.canvas.width / 2;
     const progressPercent = loadingController.getProgress();
-    if (progressPercent > 0.999 || loadingController.count < 1000) {
+    if (progressPercent > 0.999 || loadingController.count === 0) {
         return;
     }
     ctx.fillStyle = 'black';

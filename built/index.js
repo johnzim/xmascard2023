@@ -58,7 +58,7 @@ window.addEventListener("load", () => {
         finalImageFinalPosition.x = cnv.width * 0.25;
     }
     finalImageFinalPosition.y = cnv.height / 2 - height / 2;
-    LoadingController.startLoading();
+    setTimeout(LoadingController.startLoading, 1000);
     // Make Puzzle valid
     setPieceEdges(PUZZLE_STATE);
     // Jumble Pieces up
