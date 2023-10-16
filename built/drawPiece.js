@@ -1,6 +1,7 @@
 import { COLUMNS } from "./constants.js";
 import { deviceAppropriatePieceSize, getCornerPosition } from "./utils.js";
 import { Facing, Edge, Corner } from "./types.js";
+import LoadingController from "./loadingController.js";
 export function renderPuzzlePiece(ctx, piece) {
     ctx.save();
     ctx.beginPath();
@@ -92,6 +93,7 @@ export function getImage() {
             imageLoaded = true;
         });
         img.src = "/img/image2.png";
+        LoadingController.setSpeed(0.005);
     }
     return img;
 }

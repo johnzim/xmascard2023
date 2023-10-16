@@ -1,11 +1,13 @@
 import { COLUMNS, ROWS } from "./constants.js";
 import { Edge } from "./types.js";
 import { bringToFront, getCursorPosition, getPieceForPosition, jumblePieces, addNearbyPiece, setPieceEdges, moveAllConnectedPieces, hasPuzzleFinished, deviceAppropriatePieceSize, } from "./utils.js";
-import { imageLoaded, renderPuzzlePiece } from "./drawPiece.js";
+import { renderPuzzlePiece } from "./drawPiece.js";
 import { drawImage } from "./drawImage.js";
 import { easeOutElastic } from "./easing.js";
 import TransitionController from "./transitionController.js";
 import { renderBlizzard } from "./snow.js";
+import LoadingController from "./loadingController.js";
+import { drawLoadingBar } from "./loadingBar.js";
 let canvas = null;
 export let isTouchDevice = false;
 // Pieces are arranged such that the State is also a Z-buffer
@@ -50,12 +52,13 @@ window.addEventListener("load", () => {
     // Set the place where the image should be at the end
     const height = deviceAppropriatePieceSize() * ROWS;
     if (isTouchDevice) {
-        finalImageFinalPosition.x = cnv.width * 0.10;
+        finalImageFinalPosition.x = cnv.width * 0.1;
     }
     else {
         finalImageFinalPosition.x = cnv.width * 0.25;
     }
     finalImageFinalPosition.y = cnv.height / 2 - height / 2;
+    LoadingController.startLoading();
     // Make Puzzle valid
     setPieceEdges(PUZZLE_STATE);
     // Jumble Pieces up
@@ -119,10 +122,7 @@ function renderLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     // Render Snow
     renderBlizzard(ctx);
-    if (!imageLoaded) {
-        ctx.font = "48px serif";
-        ctx.fillText("Almost there...", canvas.width / 2 - 100, canvas.height / 2);
-    }
+    drawLoadingBar(ctx);
     if (!puzzleComplete) {
         // render pieces
         PUZZLE_STATE.forEach((puzzlePiece) => renderPuzzlePiece(ctx, puzzlePiece));

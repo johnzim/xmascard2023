@@ -8,6 +8,7 @@ export const easeOut = (power: number) => (t: number) =>
 export const easeInQuad = easeIn(2);
 
 export const easeOutQuad = easeOut(2);
+export const easeOutQuint = easeOut(5);
 
 export function easeInOutElastic(t: number, magnitude = 0.65) {
     const p = 1 - magnitude;

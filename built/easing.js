@@ -3,6 +3,7 @@ export const easeIn = (power) => (t) => Math.pow(t, power);
 export const easeOut = (power) => (t) => 1 - Math.abs(Math.pow((t - 1), power));
 export const easeInQuad = easeIn(2);
 export const easeOutQuad = easeOut(2);
+export const easeOutQuint = easeOut(5);
 export function easeInOutElastic(t, magnitude = 0.65) {
     const p = 1 - magnitude;
     if (t === 0 || t === 1) {

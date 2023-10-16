@@ -1,6 +1,7 @@
 import { COLUMNS } from "./constants.js";
 import { deviceAppropriatePieceSize, getCornerPosition } from "./utils.js";
 import { Facing, Position, PuzzlePiece, Edge, Corner } from "./types.js";
+import LoadingController from "./loadingController.js";
 
 export function renderPuzzlePiece(
   ctx: CanvasRenderingContext2D,
@@ -50,7 +51,9 @@ function drawVertical(
   const edgeMultiplier = (edge === Edge.OUTY ? 1 : -1) * facingMultiplier * -1;
   const topP = { ...topPosition };
   const mid = {
-    x: Math.round(topP.x + 0.25 * deviceAppropriatePieceSize() * edgeMultiplier),
+    x: Math.round(
+      topP.x + 0.25 * deviceAppropriatePieceSize() * edgeMultiplier
+    ),
     y: Math.round(topP.y + 0.5 * deviceAppropriatePieceSize()),
   };
   const bottomP = {
@@ -107,7 +110,9 @@ function drawHorizontal(
   const edgeMultiplier = (edge === Edge.OUTY ? 1 : -1) * facingMultiplier;
   const leftP = { ...leftPosition };
   const mid = {
-    y: Math.round(leftP.y - deviceAppropriatePieceSize() * 0.25 * edgeMultiplier),
+    y: Math.round(
+      leftP.y - deviceAppropriatePieceSize() * 0.25 * edgeMultiplier
+    ),
     x: Math.round(leftP.x + deviceAppropriatePieceSize() * 0.5),
   };
   const rightP = {
@@ -164,6 +169,7 @@ export function getImage(): HTMLImageElement {
       imageLoaded = true;
     });
     img.src = "/img/image2.png";
+    LoadingController.setSpeed(0.005);
   }
 
   return img;
