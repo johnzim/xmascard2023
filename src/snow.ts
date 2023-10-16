@@ -36,7 +36,7 @@ const renderSnowflake = (
   // The Snowflakes should start with a Y Offset but to compensate for that and to avoid snowflakes 'popping' into screen, we subtract an Offset from the Y. We'll have to add that Offset in later to the canvas wrap around to prevent snowflakes from disappearing too early too
   const initialOffset = -SNOWFLAKE_Y_OFFSET + rnd;
   // Different flakes fall at 20 different speeds with a minimum speed of 1
-  const flakeSpeed = rnd + 3;
+  const flakeSpeed = rnd * 0.5 + 3;
   const y =
     initialOffset +
     ((frameCount * (flakeSpeed * 0.018)) % (ctx.canvas.height + SNOWFLAKE_Y_OFFSET));
