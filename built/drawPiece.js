@@ -92,12 +92,14 @@ export function getImage() {
         img.addEventListener("load", () => {
             imageLoaded = true;
             if (LoadingController.count === 0) {
-                LoadingController.setSpeed(0.5);
-                LoadingController.setSpeed(0.005);
+                LoadingController.loaded = true;
             }
             else {
-                LoadingController.setSpeed(0.005);
+                LoadingController.setSpeed(0.003);
             }
+            setTimeout(() => {
+                LoadingController.loaded = true;
+            }, 900);
         });
         img.src = "/img/image2.png";
     }

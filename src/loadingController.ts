@@ -4,6 +4,7 @@ class LoadingController {
   count = 0;
   // The speed is initially set very low
   speed = 0.00018;
+  loaded = false;
 
   getProgress = () => {
     return easeOutQuint(this.count);

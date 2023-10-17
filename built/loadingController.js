@@ -4,6 +4,7 @@ class LoadingController {
         this.count = 0;
         // The speed is initially set very low
         this.speed = 0.00018;
+        this.loaded = false;
         this.getProgress = () => {
             return easeOutQuint(this.count);
         };
