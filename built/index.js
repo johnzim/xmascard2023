@@ -8,6 +8,8 @@ import TransitionController from "./transitionController.js";
 import { renderBlizzard } from "./snow.js";
 import LoadingController from "./loadingController.js";
 import { drawLoadingBar } from "./loadingBar.js";
+import { drawPlayButton, PlayButtonState } from "./drawPlayButton.js";
+import { isMouseClickInsidePlayButton } from "./positionUtils.js";
 let canvas = null;
 export let isTouchDevice = false;
 // Pieces are arranged such that the State is also a Z-buffer
@@ -58,6 +60,8 @@ window.addEventListener("load", () => {
         finalImageFinalPosition.x = cnv.width * 0.25;
     }
     finalImageFinalPosition.y = cnv.height / 2 - height / 2;
+    // 100ms grace is enough to make sure we correctly adjust for
+    // images already being cached
     setTimeout(LoadingController.startLoading, 100);
     // Make Puzzle valid
     setPieceEdges(PUZZLE_STATE);
@@ -70,7 +74,9 @@ function fitCanvas(canvas) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
-function end() {
+function end(e) {
+    // global ui state?
+    PlayButtonState.beingPressed = false;
     if (draggedPiece) {
         addNearbyPiece(draggedPiece, PUZZLE_STATE);
         PUZZLE_STATE.forEach((piece) => addNearbyPiece(piece, PUZZLE_STATE));
@@ -82,9 +88,26 @@ function end() {
         }
     }
     draggedPiece = null;
+    if (hasPuzzleFinished(PUZZLE_STATE)) {
+        // Should check to see if we've clicked a button
+        const canvas = getCanvas();
+        const clickUpPosition = getCursorPosition(canvas, e);
+        if (isMouseClickInsidePlayButton(clickUpPosition, topLeftPiece)) {
+            console.log("FINAL CLICK");
+        }
+    }
 }
 function start(e) {
     const canvas = getCanvas();
+    // no dragging if we're already finished!
+    if (hasPuzzleFinished(PUZZLE_STATE)) {
+        const canvas = getCanvas();
+        const clickUpPosition = getCursorPosition(canvas, e);
+        if (isMouseClickInsidePlayButton(clickUpPosition, topLeftPiece)) {
+            PlayButtonState.beingPressed = true;
+        }
+        return;
+    }
     clickStartPosition = getCursorPosition(canvas, e);
     draggedPiece = getPieceForPosition(clickStartPosition, PUZZLE_STATE);
     if (!draggedPiece) {
@@ -132,7 +155,6 @@ function renderLoop() {
         PUZZLE_STATE.forEach((puzzlePiece) => renderPuzzlePiece(ctx, puzzlePiece));
     }
     else {
-        drawImage(ctx, { x: topLeftPiece.x, y: topLeftPiece.y });
         topLeftPiece.x =
             finalImageInitialPosition.x +
                 (finalImageFinalPosition.x - finalImageInitialPosition.x) *
@@ -141,6 +163,8 @@ function renderLoop() {
             finalImageInitialPosition.y +
                 (finalImageFinalPosition.y - finalImageInitialPosition.y) *
                     easeOutElastic(TransitionController.finalMove);
+        drawImage(ctx, { x: topLeftPiece.x, y: topLeftPiece.y });
+        drawPlayButton(ctx, topLeftPiece);
     }
     window.requestAnimationFrame(renderLoop);
 }
