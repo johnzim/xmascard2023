@@ -51,3 +51,27 @@ h1 {
   top: 0;
   left: 0;
 }
+
+#message-video-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+#message-video-container.shown {
+  visibility: visible;
+  opacity: 1;
+}
+
+#message-video {
+  flex: 1;
+  max-width: 100%;
+}

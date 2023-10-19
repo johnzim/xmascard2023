@@ -21,6 +21,7 @@ import LoadingController from "./loadingController.js";
 import { drawLoadingBar } from "./loadingBar.js";
 import { drawPlayButton, PlayButtonState } from "./drawPlayButton.js";
 import { isMouseClickInsidePlayButton } from "./positionUtils.js";
+import { showMessageVideo } from "./showVideo.js";
 
 let canvas: HTMLCanvasElement = null;
 
@@ -123,6 +124,7 @@ function end(e: MouseEvent | TouchEvent) {
     const clickUpPosition = getCursorPosition(canvas, e);
     if (isMouseClickInsidePlayButton(clickUpPosition, topLeftPiece)) {
       console.log("FINAL CLICK");
+      showMessageVideo();
     }
   }
 }

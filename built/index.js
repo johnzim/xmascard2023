@@ -10,6 +10,7 @@ import LoadingController from "./loadingController.js";
 import { drawLoadingBar } from "./loadingBar.js";
 import { drawPlayButton, PlayButtonState } from "./drawPlayButton.js";
 import { isMouseClickInsidePlayButton } from "./positionUtils.js";
+import { showMessageVideo } from "./showVideo.js";
 let canvas = null;
 export let isTouchDevice = false;
 // Pieces are arranged such that the State is also a Z-buffer
@@ -94,6 +95,7 @@ function end(e) {
         const clickUpPosition = getCursorPosition(canvas, e);
         if (isMouseClickInsidePlayButton(clickUpPosition, topLeftPiece)) {
             console.log("FINAL CLICK");
+            showMessageVideo();
         }
     }
 }
