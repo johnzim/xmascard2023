@@ -19,3 +19,8 @@ export function showMessageVideo() {
     messageVideo.toggleAttribute("controls");
   });
 }
+
+export function loadMessageVideo() {
+  const messageVideo = document.getElementById("message-video");
+  messageVideo.setAttribute("src", "./img/message.mp4");
+}

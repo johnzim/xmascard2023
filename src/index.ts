@@ -123,7 +123,6 @@ function end(e: MouseEvent | TouchEvent) {
     const canvas = getCanvas();
     const clickUpPosition = getCursorPosition(canvas, e);
     if (isMouseClickInsidePlayButton(clickUpPosition, topLeftPiece)) {
-      console.log("FINAL CLICK");
       showMessageVideo();
     }
   }

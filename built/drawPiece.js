@@ -2,6 +2,7 @@ import { COLUMNS } from "./constants.js";
 import { deviceAppropriatePieceSize, getCornerPosition } from "./utils.js";
 import { Facing, Edge, Corner } from "./types.js";
 import LoadingController from "./loadingController.js";
+import { loadMessageVideo } from "./showVideo.js";
 export function renderPuzzlePiece(ctx, piece) {
     ctx.save();
     ctx.beginPath();
@@ -100,6 +101,8 @@ export function getImage() {
             setTimeout(() => {
                 LoadingController.loaded = true;
             }, 900);
+            // Now start loading the message video in the background all sneaky like
+            loadMessageVideo();
         });
         img.src = "/img/image2.png";
     }
