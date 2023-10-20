@@ -18,11 +18,14 @@ function forceEven(x) {
 }
 export function getCursorPosition(canvas, event) {
     const rect = canvas.getBoundingClientRect();
-    const x = (event.clientX ||
-        event.touches[0].clientX) - rect.left;
-    const y = (event.clientY ||
-        event.touches[0].clientY) - rect.top;
+    const x = event.clientX ||
+        getTouches(event)[0].clientX - rect.left;
+    const y = event.clientY ||
+        getTouches(event)[0].clientY - rect.top;
     return { x, y };
+}
+function getTouches(event) {
+    return event.touches.length ? event.touches : event.changedTouches;
 }
 export function getPieceForPosition(position, pieces) {
     // working from front to back check which piece is valid
@@ -140,7 +143,9 @@ function distanceBetweenPositions(A, B) {
 }
 export function addNearbyPiece(piece, pieces) {
     let connectedPosition = null;
-    const fitDistance = isTouchDevice ? deviceAppropriatePieceSize() * 0.2 : deviceAppropriatePieceSize() * 0.1;
+    const fitDistance = isTouchDevice
+        ? deviceAppropriatePieceSize() * 0.2
+        : deviceAppropriatePieceSize() * 0.1;
     if (piece.top !== Edge.FLAT && !piece.connected.top) {
         const above = getPieceAbove(piece, pieces);
         const fitPosition = {

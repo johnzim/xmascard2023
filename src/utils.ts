@@ -8,7 +8,7 @@ export function deviceAppropriatePieceSize() {
   let puzzleWidth = window.innerWidth;
 
   if (isTouchDevice) {
-    return forceEven(Math.round((puzzleWidth * 0.8)  / COLUMNS));
+    return forceEven(Math.round((puzzleWidth * 0.8) / COLUMNS));
   }
   return forceEven(Math.round((puzzleWidth * 0.5) / COLUMNS));
 }
@@ -26,12 +26,16 @@ export function getCursorPosition(
 ): Position {
   const rect = canvas.getBoundingClientRect();
   const x =
-    ((event as MouseEvent).clientX ||
-      (event as TouchEvent).touches[0].clientX) - rect.left;
+    (event as MouseEvent).clientX ||
+    getTouches(event as TouchEvent)[0].clientX - rect.left;
   const y =
-    ((event as MouseEvent).clientY ||
-      (event as TouchEvent).touches[0].clientY) - rect.top;
+    (event as MouseEvent).clientY ||
+    getTouches(event as TouchEvent)[0].clientY - rect.top;
   return { x, y };
+}
+
+function getTouches(event: TouchEvent): TouchList {
+  return event.touches.length ? event.touches : event.changedTouches;
 }
 
 export function getPieceForPosition(
@@ -192,7 +196,9 @@ function distanceBetweenPositions(A: Position, B: Position): number {
 export function addNearbyPiece(piece: PuzzlePiece, pieces: PuzzlePiece[]) {
   let connectedPosition: Position | null = null;
 
-  const fitDistance = isTouchDevice ? deviceAppropriatePieceSize() * 0.2 : deviceAppropriatePieceSize() * 0.1;
+  const fitDistance = isTouchDevice
+    ? deviceAppropriatePieceSize() * 0.2
+    : deviceAppropriatePieceSize() * 0.1;
 
   if (piece.top !== Edge.FLAT && !piece.connected.top) {
     const above = getPieceAbove(piece, pieces);
