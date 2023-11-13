@@ -1,4 +1,4 @@
 # Running
-`ts -w`
+`tsc -w`
 `live-server`
 (assumes you have `ts` and `live-server` set up)
