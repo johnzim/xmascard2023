@@ -75,3 +75,19 @@ h1 {
   flex: 1;
   max-width: 100%;
 }
+
+#snowman {
+  position: fixed;
+  bottom: 3rem;
+  right: 0rem;
+  width: 30%;
+  z-index: -1;
+}
+
+#tree {
+  position: fixed;
+  bottom: 0rem;
+  left: 0rem;
+  width: 40%;
+  z-index: -1;
+}
