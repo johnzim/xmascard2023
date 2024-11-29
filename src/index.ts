@@ -74,13 +74,11 @@ window.addEventListener("load", () => {
     isTouchDevice = navigator.maxTouchPoints > 0;
   }
 
-  // Set the place where the image should be at the end
   const height = deviceAppropriatePieceSize() * ROWS;
-  if (isTouchDevice) {
-    finalImageFinalPosition.x = cnv.width * 0.1;
-  } else {
-    finalImageFinalPosition.x = cnv.width * 0.25;
-  }
+  const width = deviceAppropriatePieceSize() * COLUMNS;
+
+  // Set the place where the image should be at the end
+  finalImageFinalPosition.x = cnv.width * 0.5 - width * 0.5;
   finalImageFinalPosition.y = cnv.height / 2 - height / 2;
 
   // 100ms grace is enough to make sure we correctly adjust for

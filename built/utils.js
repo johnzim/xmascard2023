@@ -5,10 +5,19 @@ export function deviceAppropriatePieceSize() {
     // work out what the max/height width should be.
     // ideally the jigsaw should take up 1/2 of the screen size/width
     let puzzleWidth = window.innerWidth;
-    if (isTouchDevice) {
-        return forceEven(Math.round((puzzleWidth * 0.8) / COLUMNS));
+    let puzzleHeight = window.innerHeight;
+    if (COLUMNS > ROWS) {
+        if (isTouchDevice) {
+            return forceEven(Math.round((puzzleWidth * 0.8) / COLUMNS));
+        }
+        return forceEven(Math.round((puzzleWidth * 0.5) / COLUMNS));
     }
-    return forceEven(Math.round((puzzleWidth * 0.5) / COLUMNS));
+    else {
+        if (isTouchDevice) {
+            return forceEven(Math.round((puzzleHeight * 0.5) / ROWS));
+        }
+        return forceEven(Math.round((puzzleHeight * 0.8) / ROWS));
+    }
 }
 function forceEven(x) {
     if (x % 2 !== 0) {

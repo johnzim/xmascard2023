@@ -8,7 +8,9 @@ export function drawImage(
   topLeft: Position
 ) {
   let width = deviceAppropriatePieceSize() * COLUMNS;
-  let height = deviceAppropriatePieceSize() * ROWS;
+  const img = getImage();
 
-  context.drawImage(getImage(), topLeft.x, topLeft.y, width, height);
+  const ratio = img.height / img.width;
+
+  context.drawImage(getImage(), topLeft.x, topLeft.y, width, width * ratio);
 }

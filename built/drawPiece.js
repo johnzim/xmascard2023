@@ -104,7 +104,7 @@ export function getImage() {
             // Now start loading the message video in the background all sneaky like
             loadMessageVideo();
         });
-        img.src = "/img/image2.png";
+        img.src = "/img/fountain.jpeg";
     }
     return img;
 }
